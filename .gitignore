@@ -1,0 +1,16 @@
+# Local-only generated data. The local tools produce these from private Codex stores, so they
+# contain private session text: never stage or publish them.
+
+# Corpora, ground truth, triggers and folded feedback
+/jev/corpus.jsonl
+/jev/truth.jsonl
+/jev/triggers.jsonl
+/jev/feedback-corpus.jsonl
+
+# Scored outputs and human review artifacts
+/jev/score*.json
+/jev/review-set.md
+/jev/REVIEW.md
+
+# Raw probe payload logs
+/probe/logs/
