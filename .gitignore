@@ -12,5 +12,14 @@
 /jev/review-set.md
 /jev/REVIEW.md
 
+# Public dataset: private intermediates, review and export artifacts
+/jev/dataset/score*.json
+/jev/dataset/review*.jsonl
+/jev/dataset/review*.md
+/jev/dataset/*.private.json
+/jev/dataset/*.private.jsonl
+/jev/dataset/.redaction-log.jsonl
+/jev/dataset/export*.json
+
 # Raw probe payload logs
 /probe/logs/

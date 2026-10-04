@@ -56,6 +56,7 @@ four-way Choice, and the `waiting` class became expressible.
 | `score-rubric.py`, `score-with-jev.py` | Score a local case set against the live question file (`score-rubric.py` takes `--questions`, `--cases`, `--out`); both write gitignored `score*.json`. |
 | `feedback.ts` / `import-feedback.ts` | Record a labelled correction against a hook execution; fold `feedback.jsonl` into the gitignored `feedback-corpus.jsonl` for scoring. |
 | `show.ts`, `spend.ts` | Resolve a logged execution id and report measured spend by session. |
+| `dataset/` | Public 100-record reviewed corpus of deidentified real transcript endings: `DATASET.md` card, final `cases.jsonl`, frozen `splits.json` (dev 50 / heldout 50), final `stats.json`, and `validate.ts`. |
 
 ## Status
 
@@ -64,3 +65,5 @@ unknown until a locally generated review set is adjudicated. Known residual erro
 reports that mention remaining work ("Committed cleanly… Working tree is clean") can be
 classified `authorized_unfinished`, which is the deliberate trade-off in Mjolnir's rubric, and
 the reason Belay insists on mechanical preconditions.
+
+The public `dataset/` slice is separate and published-ready: 100 reviewed records with independent blind agent-review labels (`finished` 57, `authorized_unfinished` 26, `waiting` 16, `unclear` 1) and a frozen `dev` 50 / `heldout` 50 split. `dev` may support prompt/rubric refinement and teaching; `heldout` is evaluation-only. See `dataset/DATASET.md`.

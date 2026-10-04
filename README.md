@@ -42,8 +42,8 @@ intervene. State lives outside the repository: `$CODEX_STOP_GUARD_DIR`, defaulti
 per-turn allowances.
 
 The semantic step runs the `work` question through the separate `jev-sandbox` Python package
-(`uv run python`, from `$HOME/repos/0x4007/jev-sandbox`). That package is not part of this
-repository, so in a fresh checkout the detector answers `jev-error`, the hook allows the turn,
+(`uv run python`, from a private checkout outside this repository). That package is not part of
+this repository, so in a fresh checkout the detector answers `jev-error`, the hook allows the turn,
 and the deterministic gates and probe harness still work.
 
 ## Local-only datasets
@@ -63,6 +63,18 @@ listed in `.gitignore`:
 
 Those outputs contain private session text. Generate them locally, keep them out of version
 control, and never publish them.
+
+## Public dataset
+
+`jev/dataset/` publishes a 100-record reviewed corpus of deidentified real transcript endings for the `work` completion judgement, with independent blind agent-review labels, a frozen `dev` 50 / `heldout` 50 group split, distribution accounting, and a read-only validator.
+
+`dev` examples may support prompt, rubric, and teaching-material refinement; `heldout` is evaluation-only. See `jev/dataset/DATASET.md` for the schema, label provenance, deidentification rules, coverage bias, and limits.
+
+Validate the published corpus (no network, no model calls):
+
+```sh
+deno run --allow-read jev/dataset/validate.ts
+```
 
 ## Prior art
 

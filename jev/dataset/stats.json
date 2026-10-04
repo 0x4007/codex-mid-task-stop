@@ -1,0 +1,99 @@
+{
+  "status": "final_independent_review",
+  "dataset": "jev/dataset/cases.jsonl",
+  "record_count": 100,
+  "split_counts": {
+    "dev": 50,
+    "heldout": 50
+  },
+  "label_counts": {
+    "authorized_unfinished": 26,
+    "finished": 57,
+    "unclear": 1,
+    "waiting": 16
+  },
+  "label_authority_counts": {
+    "independent_agent_review": 100
+  },
+  "label_confidence_counts": {
+    "high": 54,
+    "medium": 46
+  },
+  "source_signal_counts": {
+    "operator_feedback_recorded|operator_feedback_proxy_unverified": 1,
+    "owner_ack_continuation|strong_proxy": 10,
+    "owner_continuation_nudge|strong_proxy": 10,
+    "owner_goal_directive|moderate_proxy": 2,
+    "owner_next_request|moderate_proxy": 77
+  },
+  "source_family_counts": {
+    "corpus_continuation_positive": 10,
+    "corpus_negative_candidate": 77,
+    "operator_feedback_anchor": 1,
+    "trigger_conditioned": 12
+  },
+  "selection_shape_counts": {
+    "blocker_or_wait": 9,
+    "completion_report": 17,
+    "ends_question": 6,
+    "other_report": 36,
+    "remaining_or_announce": 13,
+    "short_status": 19
+  },
+  "request_length": {
+    "min": 40,
+    "p50": 102,
+    "max": 839
+  },
+  "assistant_final_length": {
+    "min": 40,
+    "p50": 354,
+    "max": 930
+  },
+  "sanitization": {
+    "method": "deterministic_entity_placeholder_v2",
+    "edit_ops_counts": {
+      "bold_issue_placeholder": 1,
+      "branch_placeholder": 9,
+      "commit_placeholder": 18,
+      "deployment_placeholder": 1,
+      "file_placeholder": 12,
+      "handle_placeholder": 1,
+      "home_path_placeholder": 4,
+      "identifier_placeholder": 1,
+      "identity_placeholder": 13,
+      "issue_placeholder": 7,
+      "local_url_placeholder": 1,
+      "markdown_link_target": 16,
+      "model_placeholder": 2,
+      "provider_placeholder": 1,
+      "repo_path_placeholder": 1,
+      "system_path_placeholder": 1,
+      "url_placeholdered": 4,
+      "uuid_placeholder": 2,
+      "worktree_placeholder": 1
+    },
+    "placeholder_counts": {
+      "[BRANCH]": 9,
+      "[COMMIT]": 18,
+      "[DEPLOYMENT]": 1,
+      "[FILE]": 12,
+      "[IDENTIFIER]": 1,
+      "[ID]": 2,
+      "[ISSUE]": 7,
+      "[LOCAL_URL]": 1,
+      "[MODEL]": 2,
+      "[ORG]": 2,
+      "[PRIVATE_URL]": 4,
+      "[PROVIDER]": 1,
+      "[REPO_PATH]": 5,
+      "[SERVICE]": 11,
+      "[SYSTEM_PATH]": 1,
+      "[USER]": 1,
+      "[WORKTREE]": 1
+    },
+    "rows_with_edit_ops": 53
+  },
+  "review_dropped_rows": 5,
+  "note": "Labels are independent blind agent-review annotations; agent review is not human annotation or ground truth. One source-family row is recorded operator feedback with an unverified author and proxy-only strength."
+}
