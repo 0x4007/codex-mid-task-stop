@@ -23,3 +23,13 @@
 
 # Raw probe payload logs
 /probe/logs/
+
+# Backtesting sandbox: any local run output or cache accidentally written beside the source is
+# private session data and must never be tracked. The sandbox itself writes only under the
+# ignored .publication-audit/backtesting/ path.
+/backtest/out/
+/backtest/.jev-cache/
+
+# Private publication-audit workspace: raw snapshots, source mappings, reviewer annotations,
+# queues, caches and results for the backtesting sandbox. Never tracked, never published.
+/.publication-audit/

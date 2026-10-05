@@ -76,6 +76,10 @@ Validate the published corpus (no network, no model calls):
 deno run --allow-read jev/dataset/validate.ts
 ```
 
+## Private backtesting sandbox
+
+`backtest/` is a replay-only sandbox for measuring the `work` judgement on real sessions and on the frozen public benchmark, with a bounded loop that edits question text and the caller floor only. It never installs a live hook, changes config, or publishes; all snapshots, mappings, caches and results stay under the ignored `.publication-audit/backtesting/` path. Local ingestion is read-only and needs no model call; the paid protocol and the independent annotation batch are root-run steps. See `backtest/README.md`.
+
 ## Prior art
 
 The detector adopts published work rather than inventing it; the sources and the question are in
