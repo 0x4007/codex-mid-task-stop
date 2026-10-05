@@ -1,0 +1,27 @@
+{
+  "explicit_remaining": {
+    "type": "noul",
+    "instructions": {
+      "question": "Does the final message explicitly leave a concrete action requested by the user for the assistant itself to perform, rather than reporting it as completed, instructing the user, or proposing optional follow-up?",
+      "inspect": "user_request and assistant_final",
+      "focus": "Look for a concrete next action the assistant itself still has to take. Reporting completed work, asking the user to act, or offering optional follow-ups are false."
+    },
+    "criteria": {
+      "true": {
+        "what": "The message states that a specific requested action is not done and names it.",
+        "examples": [
+          "The implementation is in place. Deployment remains.",
+          "The migration has not been run yet."
+        ]
+      },
+      "false": {
+        "what": "The message reports completion, instructs the user, or offers optional follow-up.",
+        "not_for": "A passing mention of future work inside a completed report.",
+        "examples": [
+          "Done; the fix is deployed.",
+          "Say the word and I will commit it."
+        ]
+      }
+    }
+  }
+}

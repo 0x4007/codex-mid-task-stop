@@ -1,0 +1,317 @@
+{
+  "schema": "locked-reserve-public-results/v1",
+  "generated_utc": "2026-10-05T07:27:48Z",
+  "study": "frozen 24-case locked reserve; three one-question profiles; offline OR composition",
+  "model": {
+    "name": "jev-1.13.0",
+    "model_echo": "typesafe/jev-1.13-20260917",
+    "windows": "FIRST900 request / FIRST1200 final Unicode code points"
+  },
+  "questions": {
+    "present_tense_v3": {
+      "qid": "present_tense_v3",
+      "wire_sha256": "f30bde7a0d732b7519361426944d0f90e30194f80d301c68dd4d16facc7245dc",
+      "source_sha256": "7c63f7932901782f75223d677189e806a915dd2096b05667cf23f2d112f77beb"
+    },
+    "work": {
+      "qid": "work",
+      "wire_sha256": "ac8ff0d29369397bed890cc1476e6900e58410d014133c66eba1ed13a9cdd6a5",
+      "source_sha256": "e31f047b3ff67757f79ef8bc7e826f23c3044a849ef0e71771b098c9f23bce59"
+    },
+    "explicit_remaining": {
+      "qid": "explicit_remaining",
+      "wire_sha256": "184818d407298f1a2735dca64c51641cec7b1b0ec941e5ba1a937b15639c7e21",
+      "source_sha256": "bfa96cf40e15522a0eeb8bb718d2f8512e2b1a79a4815807fff926de45a39493"
+    }
+  },
+  "denominator": {
+    "sampled_rows": 24,
+    "provider_callable_rows": 22,
+    "privacy_quarantined_rows": 2,
+    "ambiguous_rows": 8,
+    "primary_context_proxy_scored": 15,
+    "primary_independent_heldout": 12,
+    "prefix_proxy_scored": 16,
+    "exposure_excluded_from_independent_claim": 4,
+    "exposure_status_counts": {
+      "actual_train_proposer_input_exposure": 3,
+      "exposure_provisional_exact_turn_linkage_unproven": 1,
+      "no_exposure_evidence_in_targeted_run_artifacts": 20
+    }
+  },
+  "proxy_agreement": {
+    "prefix_pair": {
+      "agreement": "17/24",
+      "kappa": 0.493976
+    },
+    "context_pair": {
+      "agreement": "20/24",
+      "kappa": 0.692308
+    }
+  },
+  "metrics_primary_context_15": {
+    "v3_0.5": {
+      "n": 15,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 13,
+      "accuracy": 0.933333,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "v3_0.6": {
+      "n": 15,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 13,
+      "accuracy": 0.933333,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "explicit_0.8": {
+      "n": 15,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tn": 13,
+      "accuracy": 0.866667,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "work_0.56": {
+      "n": 15,
+      "tp": 2,
+      "fp": 2,
+      "fn": 0,
+      "tn": 11,
+      "accuracy": 0.866667,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 1,
+      "waiting_false_resume_rate": 1.0
+    },
+    "composition_v3_ge_0.5_or_explicit_ge_0.8": {
+      "n": 15,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 13,
+      "accuracy": 0.933333,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "composition_v3_ge_0.6_or_explicit_ge_0.8": {
+      "n": 15,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 13,
+      "accuracy": 0.933333,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    }
+  },
+  "metrics_primary_independent_12": {
+    "v3_0.5": {
+      "n": 12,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 10,
+      "accuracy": 0.916667,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "v3_0.6": {
+      "n": 12,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 10,
+      "accuracy": 0.916667,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "explicit_0.8": {
+      "n": 12,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tn": 10,
+      "accuracy": 0.833333,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "work_0.56": {
+      "n": 12,
+      "tp": 2,
+      "fp": 2,
+      "fn": 0,
+      "tn": 8,
+      "accuracy": 0.833333,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 1,
+      "waiting_false_resume_rate": 1.0
+    },
+    "composition_v3_ge_0.5_or_explicit_ge_0.8": {
+      "n": 12,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 10,
+      "accuracy": 0.916667,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "composition_v3_ge_0.6_or_explicit_ge_0.8": {
+      "n": 12,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 10,
+      "accuracy": 0.916667,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    }
+  },
+  "metrics_prefix_proxy_16_nonprimary_diagnostic": {
+    "v3_0.5": {
+      "n": 16,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "accuracy": 0.9375,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "v3_0.6": {
+      "n": 16,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "accuracy": 0.9375,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "explicit_0.8": {
+      "n": 16,
+      "tp": 0,
+      "fp": 0,
+      "fn": 2,
+      "tn": 14,
+      "accuracy": 0.875,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "work_0.56": {
+      "n": 16,
+      "tp": 2,
+      "fp": 2,
+      "fn": 0,
+      "tn": 12,
+      "accuracy": 0.875,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 1,
+      "waiting_false_resume_rate": 1.0
+    },
+    "composition_v3_ge_0.5_or_explicit_ge_0.8": {
+      "n": 16,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "accuracy": 0.9375,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    },
+    "composition_v3_ge_0.6_or_explicit_ge_0.8": {
+      "n": 16,
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "tn": 14,
+      "accuracy": 0.9375,
+      "positive_n": 2,
+      "waiting_n": 1,
+      "waiting_false_resume": 0,
+      "waiting_false_resume_rate": 0.0
+    }
+  },
+  "scope_assertions": {
+    "exact_frozen_id_and_hash_join": true,
+    "n": {
+      "primary": 15,
+      "independent": 12,
+      "prefix": 16
+    },
+    "expected_n": {
+      "primary": 15,
+      "independent": 12,
+      "prefix": 16
+    },
+    "same_context_labels_as_frozen_scope": true
+  },
+  "replay": {
+    "profiles": 3,
+    "logical_replays": 66,
+    "replayed_cases_per_profile": 22,
+    "bought_tokens": 0,
+    "answers_identical": true
+  },
+  "fresh_spend": {
+    "bought_input_tokens": 72438,
+    "cost_usd": 0.003043,
+    "price_assumption_usd_per_m_input_tokens": 0.042,
+    "note": "configuration estimate, not a provider billing receipt"
+  },
+  "external_reference_results": {
+    "public_heldout50_floor0.6": "47/50",
+    "vps_diagnostic18_floor0.6": "17/18",
+    "deployed_choice18_floor0.56": "15/18",
+    "mac_selected22_floor0.6": "20/22 with 0/2 resume recall (majority stop)"
+  },
+  "claims_and_limits": [
+    "conditional on frozen same-model independent-agent-review proxy labels, not human truth or gold labels",
+    "sampled 24 rows are not an at-scale reliability estimate",
+    "four prior-split rows excluded from the independent-heldout claim without replacement",
+    "two rows privacy-quarantined and never called",
+    "bounded context, not complete history",
+    "explicit_remaining snapshot is frozen_current_explicit_remaining_snapshot, not proven exact historical B",
+    "no Noul/Choice probability equivalence",
+    "no live/default/hook promotion; research only"
+  ]
+}
