@@ -50,7 +50,11 @@ import {
   pairHash,
   splitByConversation,
 } from "./lib/panel.ts";
-import { importGatedLabels, readJsonl } from "./lib/labelimport.ts";
+import {
+  importGatedLabels,
+  type LocalSnapshotRow,
+  readJsonl,
+} from "./lib/labelimport.ts";
 import { carrierFor, parseSessionText } from "./lib/transcript.ts";
 import { scrubText } from "./lib/scrub.ts";
 import {
@@ -78,6 +82,7 @@ import { DEFAULTS } from "./lib/config.ts";
 import { privacyHits } from "../jev/dataset/validate.ts";
 import { selectQueue } from "./lib/queueselect.ts";
 import { joinGatedLabels } from "./run.ts";
+import { candidatesFrom } from "./prepare.ts";
 
 const line = (value: unknown) => `${JSON.stringify(value)}\n`;
 
@@ -1278,4 +1283,73 @@ Deno.test("actual v4 loop join resolves all 11 accepted labels including the 5 D
     assertEquals(entry.row.user_request, item.user_request);
     assertEquals(entry.row.assistant_final, item.assistant_final);
   }
+});
+
+Deno.test("queue prep gates windows on Unicode codepoints, not UTF-16 units", () => {
+  const astral = "😀";
+  const snapshotRow = (
+    id: string,
+    user_request: string,
+    assistant_final: string,
+  ): LocalSnapshotRow => ({
+    id,
+    group_id: `group-${id}`,
+    tier: "session",
+    user_request,
+    assistant_final,
+    hash: "h",
+    source_path: "fixture",
+  });
+  const prep = (rows: LocalSnapshotRow[]) =>
+    candidatesFrom(rows, "dev", new Set<string>());
+  const bmpFinal =
+    "The requested work is complete and verified: the fixtures load, the queue builds, and all of the offline checks pass without touching private data.";
+  const fill = (base: string, total: number) =>
+    `${base} ${astral.repeat(total - Array.from(base).length - 1)}`;
+  const words =
+    "The requested work is complete and verified today with all checks passing now";
+
+  // Exactly 900 astral codepoints (1785 UTF-16 units) must be in-window.
+  const request900 = `please fix ${astral.repeat(885)} now`;
+  assertEquals(Array.from(request900).length, 900);
+  assertEquals(request900.length, 1785);
+  const accepted = prep([snapshotRow("cap-astral", request900, bmpFinal)]);
+  assertEquals(accepted.pool.length, 1);
+  assertEquals(accepted.pool[0].request, request900);
+  assertEquals(accepted.rejects.out_of_window, undefined);
+
+  // A final of exactly 1200 astral codepoints is in-window too.
+  const final1200 = fill(words, 1200);
+  assertEquals(Array.from(final1200).length, 1200);
+  const acceptedFinal = prep([
+    snapshotRow("cap-astral-final", request900, final1200),
+  ]);
+  assertEquals(acceptedFinal.pool.length, 1);
+  assertEquals(acceptedFinal.rejects.out_of_window, undefined);
+
+  // One codepoint past either cap is a true overflow (the old UTF-16 count hid this).
+  const request901 = `please fix ${astral.repeat(886)} now`;
+  assertEquals(Array.from(request901).length, 901);
+  const requestOver = prep([snapshotRow("over-astral", request901, bmpFinal)]);
+  assertEquals(requestOver.pool.length, 0);
+  assertEquals(requestOver.rejects.out_of_window, 1);
+  const finalOverflow = prep([
+    snapshotRow("over-astral-final", request900, fill(words, 1201)),
+  ]);
+  assertEquals(finalOverflow.pool.length, 0);
+  assertEquals(finalOverflow.rejects.out_of_window, 1);
+
+  // BMP text is unchanged: codepoint and UTF-16 counts agree at the same boundary.
+  const bmpRequest = `please fix ${"x".repeat(885)} now`;
+  assertEquals(bmpRequest.length, 900);
+  assertEquals(Array.from(bmpRequest).length, bmpRequest.length);
+  assertEquals(
+    prep([snapshotRow("cap-bmp", bmpRequest, bmpFinal)]).pool.length,
+    1,
+  );
+  const bmpOver = prep([
+    snapshotRow("over-bmp", `please fix ${"x".repeat(886)} now`, bmpFinal),
+  ]);
+  assertEquals(bmpOver.pool.length, 0);
+  assertEquals(bmpOver.rejects.out_of_window, 1);
 });

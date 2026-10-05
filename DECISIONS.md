@@ -23,6 +23,12 @@ Durable decisions for this repository. Keep entries short; link to the artifact 
 ## Research branch coordination (2026-10-05)
 
 - `research/vps-backtest` is intentionally unmerged at base `92482a8a3fadff1748ebff2cde8894ba685d88a0`; `main` stays stable, and no merge or live hook/config change happens until Mac/VPS coordination.
-- The VPS owns `backtest/`; the Mac holds concurrent richer data and its reported probe numbers (46-47/50 at floors 0.5/0.6, waiting false-resume 0-1/10) are user-reported and not independently verified by the VPS.
+- The VPS owns `backtest/`; the Mac holds concurrent richer data, and the VPS independently reproduced the exact v3 public50 probe at floors 0.5/0.6 with waiting false-resume 1/10 and 0/10 ([research report](docs/VPS_PROBE_RESEARCH.md)).
 - Before any merge, preserve the frozen public heldout split and validate the exact probe/question revision, model, state windows, threshold, per-case predictions, and caches; prioritize stronger `waiting` evidence and agree source ownership, shared runner, and model interfaces.
 - Published claims reference only the public dataset paths (`jev/dataset/cases.jsonl`, `jev/dataset/splits.json`, `jev/dataset/DATASET.md`, `jev/dataset/validate.ts`); private raw sessions, snapshots, caches, champion state, reviewer logs, and the literal privacy dictionary are never republished.
+
+## Frozen present-tense Noul comparator (2026-10-05)
+
+- `backtest/questions-present-tense-v3.json` is a byte-exact public copy (SHA-256 `7c63f7932901782f75223d677189e806a915dd2096b05667cf23f2d112f77beb`) of the frozen optional Noul comparator scored by the VPS present-tense research replays; details and limits are in `docs/VPS_PROBE_RESEARCH.md`.
+- Recorded exception: research replays may score this standalone frozen comparator on frozen cohorts, but it is not support in the existing Choice optimizer, not a promoted champion, and never a live/default question or hook change; no weights, training, or live switch results from it.
+- The existing default Choice optimization policy is unchanged; the VPS owns `backtest/`, the Mac owns `jev/`, and private inputs, reviewer logs, and provenance mappings stay private. No merge or runtime deployment is implied.

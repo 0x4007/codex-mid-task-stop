@@ -93,7 +93,7 @@ interface Candidate {
   validation: string;
 }
 
-function candidatesFrom(
+export function candidatesFrom(
   rows: LocalSnapshotRow[],
   split: Split,
   primaryHashes: Set<string>,
@@ -104,7 +104,10 @@ function candidatesFrom(
     const bump = (reason: string) => {
       rejects[reason] = (rejects[reason] ?? 0) + 1;
     };
-    if (row.user_request.length > 900 || row.assistant_final.length > 1200) {
+    if (
+      Array.from(row.user_request).length > 900 ||
+      Array.from(row.assistant_final).length > 1200
+    ) {
       bump("out_of_window");
       continue;
     }
