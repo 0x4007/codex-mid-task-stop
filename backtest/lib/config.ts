@@ -39,7 +39,14 @@ export interface BacktestConfig {
   /** Public dev row that overlaps the original18 recorded-feedback set; never tuned on. */
   devAnchorOverlapId: string;
   /** Independent-review reliability gate for the blind annotation cache. */
-  judge: { reviewers: number; minAgreement: number; minPerReviewer: number };
+  judge: {
+    reviewers: number;
+    minAgreement: number;
+    minPerReviewer: number;
+    /** Reviewer carrier profile; host-specific values live in the private override. */
+    acceptedHeader: string;
+    acceptedSandbox: string;
+  };
   /** Version tag for versioned scratch/manifest artifacts (v2 queue, champion state). */
   scratchVersion: number;
 }
@@ -75,7 +82,13 @@ export const DEFAULTS: BacktestConfig = {
   minFinalChars: 40,
   blindQueueSize: 12,
   devAnchorOverlapId: "public-0068",
-  judge: { reviewers: 2, minAgreement: 0.75, minPerReviewer: 10 },
+  judge: {
+    reviewers: 2,
+    minAgreement: 0.75,
+    minPerReviewer: 10,
+    acceptedHeader: "Ultra/max",
+    acceptedSandbox: "workspace-write/ask",
+  },
   /** Version tag for versioned scratch/manifest artifacts (v2 queue, champion state). */
   scratchVersion: 2,
 };

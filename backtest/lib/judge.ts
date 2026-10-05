@@ -95,20 +95,20 @@ export interface JudgeReplay {
   labels: AcceptedLabel[];
 }
 
-const ACCEPTED_HEADER = "Ultra/max";
-const ACCEPTED_SANDBOX = "workspace-write/ask";
-
 export function isLabel(value: unknown): value is Label {
   return typeof value === "string" &&
     (LABEL_DOMAIN as readonly string[]).includes(value);
 }
 
 /** Header/sandbox/model/exit gate. Privacy and context are checked separately and both required. */
-export function acceptedCarrier(entry: ReviewEntry): boolean {
+export function acceptedCarrier(
+  entry: ReviewEntry,
+  judge: BacktestConfig["judge"],
+): boolean {
   if (entry.exit_code !== 0) return false;
   if (entry.header_verified !== true) return false;
-  if (entry.accepted?.header !== ACCEPTED_HEADER) return false;
-  if (entry.accepted?.sandbox !== ACCEPTED_SANDBOX) return false;
+  if (entry.accepted?.header !== judge.acceptedHeader) return false;
+  if (entry.accepted?.sandbox !== judge.acceptedSandbox) return false;
   if (
     !entry.model || !/ultra/i.test(entry.model) || !/max/i.test(entry.model)
   ) return false;
@@ -191,7 +191,7 @@ export function replayJudge(
   const stats: ReviewerStat[] = reviewers.map((reviewer) => {
     const rows = entries.filter((e) => e.reviewer === reviewer);
     const accepted = rows.filter((row) =>
-      acceptedCarrier(row) && row.privacy_pass === true &&
+      acceptedCarrier(row, cfg.judge) && row.privacy_pass === true &&
       row.context_sufficient === true
     );
     const labels: Record<string, number> = {};
@@ -204,10 +204,10 @@ export function replayJudge(
       accepted: accepted.length,
       rejected: rows.length - accepted.length,
       privacy_rejected: rows.filter((row) =>
-        acceptedCarrier(row) && row.privacy_pass !== true
+        acceptedCarrier(row, cfg.judge) && row.privacy_pass !== true
       ).length,
       context_rejected: rows.filter((row) =>
-        acceptedCarrier(row) && row.context_sufficient !== true
+        acceptedCarrier(row, cfg.judge) && row.context_sufficient !== true
       ).length,
       labels,
     };
@@ -229,7 +229,7 @@ export function replayJudge(
       });
       continue;
     }
-    if (!acceptedCarrier(entry)) continue;
+    if (!acceptedCarrier(entry, cfg.judge)) continue;
     const bucket = candidatesByItem.get(entry.queue_id) ?? [];
     bucket.push(entry);
     candidatesByItem.set(entry.queue_id, bucket);
@@ -404,7 +404,7 @@ export function readAnnotationFile(
           ? true
           : row.header_verified === true,
         accepted: (row.accepted as ReviewEntry["accepted"]) ??
-          { header: ACCEPTED_HEADER, sandbox: ACCEPTED_SANDBOX },
+          { header: "Ultra/max", sandbox: "workspace-write/ask" },
       });
     } catch {
       continue;

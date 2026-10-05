@@ -76,8 +76,10 @@ async function main(): Promise<number> {
     quarantined: result.quarantined,
     labels_written: result.labels.length,
     labels_path: result.labels.length > 0 ? labelsPath : null,
-    acceptance_rule:
-      "exit 0 + header_verified + accepted.header Ultra/max + accepted.sandbox workspace-write/ask + Ultra/max model echo + label in {finished,authorized_unfinished,waiting,unclear} + privacy_pass && context_sufficient on both reviewers + pair sha256 match + queue sha256 match",
+    acceptance_rule: "exit 0 + header_verified + accepted.header " +
+      cfg.judge.acceptedHeader + " + accepted.sandbox " +
+      cfg.judge.acceptedSandbox +
+      " + Ultra/max model echo + label in {finished,authorized_unfinished,waiting,unclear} + privacy_pass && context_sufficient on both reviewers + pair sha256 match + queue sha256 match",
     provenance:
       "independent_agent_review (not human annotation, not ground truth)",
     reviewer_commands: reviewerCommands(selected.queuePath, 6, 2),

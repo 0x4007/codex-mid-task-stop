@@ -78,7 +78,19 @@ import {
   runBatch,
 } from "./lib/jev.ts";
 import { replayJudge } from "./lib/judge.ts";
-import { DEFAULTS } from "./lib/config.ts";
+import { DEFAULTS, loadConfig } from "./lib/config.ts";
+
+/** The v4 fixtures live in the private writer workspace; skip on checkouts without it. */
+const V4_PRIVATE_LEDGER =
+  ".publication-audit/backtesting/writer-v4/quarantine-ledger.private.json";
+const hasV4Private = (() => {
+  try {
+    Deno.statSync(V4_PRIVATE_LEDGER);
+    return true;
+  } catch {
+    return false;
+  }
+})();
 import { privacyHits } from "../jev/dataset/validate.ts";
 import { selectQueue } from "./lib/queueselect.ts";
 import { joinGatedLabels } from "./run.ts";
@@ -720,7 +732,7 @@ Deno.test("legacy string instructions are adapted for every arm and compile offl
   assertEquals(b.adapterApplied, []);
   assertEquals(JSON.stringify(b.questions), JSON.stringify(objectDoc));
 
-  const sandbox = "/home/codex/repos/0x4007/jev-sandbox";
+  const sandbox = loadConfig().config.jevSandbox;
   const snap = `${Deno.cwd()}/.publication-audit/backtesting/writer-questions`;
   const files = [
     "question-auto-f69158a.json",
@@ -981,7 +993,7 @@ Deno.test("gated labels join queue_id and pair hash to source case, group and sp
 });
 
 Deno.test("offline SDK cache check: stable keys, distinct inputs, corrupt entry is a miss", async () => {
-  const sandbox = "/home/codex/repos/0x4007/jev-sandbox";
+  const sandbox = loadConfig().config.jevSandbox;
   const tempCache = await Deno.makeTempDir();
   const script = [
     "import json, os, pathlib",
@@ -1152,6 +1164,10 @@ Deno.test("v3 queue is hash-bound, label-free, and free of residual identifiers"
 });
 
 Deno.test("v4 subset is selected, excludes the quarantined case, and keeps 11 unchanged pairs", () => {
+  if (!hasV4Private) {
+    console.warn("skipped: private v4 fixture absent in this checkout");
+    return;
+  }
   const B = ".publication-audit/backtesting";
   const selected = selectQueue(B);
   assertEquals(selected.version, 4);
@@ -1192,6 +1208,10 @@ Deno.test("v4 subset is selected, excludes the quarantined case, and keeps 11 un
 });
 
 Deno.test("v4 label import binds approved queue text for the provider and source text for provenance", () => {
+  if (!hasV4Private) {
+    console.warn("skipped: private v4 fixture absent in this checkout");
+    return;
+  }
   const B = ".publication-audit/backtesting";
   const V4 = `${B}/writer-v4`;
   const result = importGatedLabels({
@@ -1212,10 +1232,17 @@ Deno.test("v4 label import binds approved queue text for the provider and source
   assertEquals(result.status, "gated");
   assertEquals(result.labels.length, 11);
   assertEquals(result.splits, { dev: 6, "locked-heldout": 5 });
-  const queue = JSON.parse(Deno.readTextFileSync(`${V4}/blind-queue.json`)) as { items: Array<Record<string, string>> };
+  const queue = JSON.parse(Deno.readTextFileSync(`${V4}/blind-queue.json`)) as {
+    items: Array<Record<string, string>>;
+  };
   const items = new Map(queue.items.map((i) => [i.queue_id, i]));
   const source = new Map<string, Record<string, string>>();
-  for (const path of [`${B}/writer-snapshot/local-primary.private.jsonl`, `${B}/writer-snapshot/local-db-pointer.private.jsonl`]) {
+  for (
+    const path of [
+      `${B}/writer-snapshot/local-primary.private.jsonl`,
+      `${B}/writer-snapshot/local-db-pointer.private.jsonl`,
+    ]
+  ) {
     for (const line of Deno.readTextFileSync(path).split("\n")) {
       if (line.trim()) {
         const row = JSON.parse(line) as Record<string, string>;
@@ -1223,22 +1250,37 @@ Deno.test("v4 label import binds approved queue text for the provider and source
       }
     }
   }
-  const provenance = JSON.parse(Deno.readTextFileSync(`${V4}/source-pair-provenance.private.json`)) as {
+  const provenance = JSON.parse(
+    Deno.readTextFileSync(`${V4}/source-pair-provenance.private.json`),
+  ) as {
     entries: Record<string, { original_source_pair_sha256: string }>;
   };
   for (const label of result.labels) {
     const item = items.get(label.queue_id) as Record<string, string>;
     assertEquals(label.provider_request, item.user_request);
     assertEquals(label.provider_final, item.assistant_final);
-    assertEquals(label.pair_sha256, pairHash(item.user_request, item.assistant_final));
+    assertEquals(
+      label.pair_sha256,
+      pairHash(item.user_request, item.assistant_final),
+    );
     assertEquals(label.queue_pair_sha256, label.pair_sha256);
     const row = source.get(label.case_id) as Record<string, string>;
-    assertEquals(label.source_case_pair_sha256, pairHash(row.user_request, row.assistant_final));
-    assertEquals(label.source_case_pair_sha256, provenance.entries[label.queue_id].original_source_pair_sha256);
+    assertEquals(
+      label.source_case_pair_sha256,
+      pairHash(row.user_request, row.assistant_final),
+    );
+    assertEquals(
+      label.source_case_pair_sha256,
+      provenance.entries[label.queue_id].original_source_pair_sha256,
+    );
   }
 });
 
 Deno.test("actual v4 loop join resolves all 11 accepted labels including the 5 DB-tier cases", () => {
+  if (!hasV4Private) {
+    console.warn("skipped: private v4 fixture absent in this checkout");
+    return;
+  }
   const B = ".publication-audit/backtesting";
   const V4 = `${B}/writer-v4`;
   const result = importGatedLabels({
@@ -1263,20 +1305,31 @@ Deno.test("actual v4 loop join resolves all 11 accepted labels including the 5 D
     assistant_final: string;
     label: string;
   };
-  const devPool = readJsonl<PoolRow>(`${B}/writer-cases/local-dev.private.jsonl`);
+  const devPool = readJsonl<PoolRow>(
+    `${B}/writer-cases/local-dev.private.jsonl`,
+  );
   const heldoutPool = readJsonl<PoolRow>(
     `${B}/writer-cases/local-locked-heldout.private.jsonl`,
   );
   const dbPointerPool = readJsonl<PoolRow>(
     `${B}/writer-snapshot/local-db-pointer.private.jsonl`,
   );
-  const join = joinGatedLabels(result.labels, devPool, heldoutPool, dbPointerPool);
+  const join = joinGatedLabels(
+    result.labels,
+    devPool,
+    heldoutPool,
+    dbPointerPool,
+  );
   assertEquals(join.quarantined.length, 0);
   assertEquals(join.dev.length, 6);
   assertEquals(join.heldout.length, 5);
-  const dbTier = [...join.dev, ...join.heldout].filter((entry) => entry.label.tier === "db-pointer");
+  const dbTier = [...join.dev, ...join.heldout].filter((entry) =>
+    entry.label.tier === "db-pointer"
+  );
   assertEquals(dbTier.length, 5);
-  const queue = JSON.parse(Deno.readTextFileSync(`${V4}/blind-queue.json`)) as { items: Array<Record<string, string>> };
+  const queue = JSON.parse(Deno.readTextFileSync(`${V4}/blind-queue.json`)) as {
+    items: Array<Record<string, string>>;
+  };
   const items = new Map(queue.items.map((i) => [i.queue_id, i]));
   for (const entry of [...join.dev, ...join.heldout]) {
     const item = items.get(entry.label.queue_id) as Record<string, string>;
