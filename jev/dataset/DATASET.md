@@ -143,3 +143,14 @@ OPENROUTER_API_KEY=<key> python3 jev/score-rubric.py \
 ```sh
 deno run --allow-read jev/dataset/validate.ts
 ```
+
+## Training split (proxy labels)
+
+`train/cases.jsonl` is a 678-row proxy-labelled training slice built with the same topic, privacy,
+and code filters and the same sanitizer as this reviewed corpus, with every reviewed pair excluded
+(107 overlaps removed). Labels are proxies — 673 `finished` / 5 `authorized_unfinished`
+(`corpus_next_user_nudge_heuristic` 672, `user_ack_continuation` 3, `corpus_stop_label` 1,
+`owner_feedback` 2) — so use it for training volume and negative diversity only, and use this
+reviewed corpus (26 `authorized_unfinished`) for evaluation. `train/validate.ts` reruns the
+schema, window, duplicate, and privacy checks.
+

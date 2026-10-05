@@ -1,0 +1,49 @@
+{
+  "dataset": "jev/dataset/train/cases.jsonl",
+  "record_count": 678,
+  "labels": {
+    "finished": 673,
+    "authorized_unfinished": 5
+  },
+  "sources": {
+    "corpus.jsonl": 673,
+    "triggers.jsonl": 3,
+    "feedback-corpus.jsonl": 2
+  },
+  "label_authorities": {
+    "proxy_source_label": 676,
+    "owner_feedback": 2
+  },
+  "truncated_rows": 0,
+  "dedup_collisions": 17,
+  "exclusions": {
+    "raw:topic_private_business": 941,
+    "raw:code_fence": 460,
+    "raw:topic_security": 924,
+    "too_short_raw": 990,
+    "code_heavy": 84,
+    "raw:topic_third_party_data": 21,
+    "raw:topic_financial": 538,
+    "raw:topic_personal": 455,
+    "raw:topic_private_infra": 487,
+    "overlaps_reviewed": 107,
+    "raw:rule_cookie_session": 3,
+    "san:over_window_after_sanitize": 159,
+    "raw:topic_medical": 41,
+    "writer_review_drop": 96,
+    "san:too_short_after_sanitize": 10,
+    "raw:rule_private_key_block": 3,
+    "raw:rule_env_secret_assignment": 6,
+    "raw:rule_password_assignment": 2,
+    "raw:rule_openai_key": 1,
+    "raw:rule_authorization_bearer": 1,
+    "raw:rule_stripe_live_key": 2,
+    "raw:rule_url_with_password": 1,
+    "raw:rule_jwt": 1,
+    "san:residual": 2,
+    "raw:rule_connection_string_password": 2,
+    "raw:rule_github_legacy_40hex": 3
+  },
+  "policy": "windows truncated to 900/1200; topic/privacy/code filters unchanged; reviewed-case pairs excluded",
+  "note": "Proxy-labelled training split. Not reviewed, not for evaluation; use jev/dataset/cases.jsonl (reviewed) for evaluation."
+}
