@@ -24,14 +24,17 @@ Stop event
   |- model is GPT/OpenAI                -> allow silently (free; the guard is for non-GPT models)
   |- gate_ends_without_tool_call false  -> allow   (free; ../jev/gates.ts, no model)
   |- allowance for (session, turn) spent-> allow
-  |- jev `work` question (~200ms)
-  |    finished | waiting | unclear     -> allow
-  |    authorized_unfinished            -> consume allowance, then continue
+  |- jev `present_tense_v3` noul (~200ms; `work` Choice under CODEX_STOP_GUARD_RUBRIC=work)
+  |    probe >= floor (default 0.6)      -> consume allowance, then continue
+  |    any mechanical text receipt       -> consume allowance, then continue
+  |    a completion claim contradicted   -> consume allowance, then continue
+  |    otherwise                         -> allow
 ```
 
 Every decision is appended to `decisions.jsonl` with its evidence, whether or not it continued.
-Rows with a jev verdict carry the effective `floor` and the measured `unfinished` probability
-alongside the full verdict. That log is the measurement surface for the trial.
+Rows with a jev verdict carry the effective `floor`, the measured `unfinished` probability, the
+fired `text_receipts`, the `claim_contradicted` flag, and the decision-time `request_head` /
+`final_head`, alongside the full verdict. That log is the measurement surface for the trial.
 
 ## The model gate
 
@@ -45,13 +48,15 @@ leaves the guard on.
 
 One continuation per original user turn, keyed by `(session_id, turn_id)`, written before the
 continuation is emitted. A crash after consuming forfeits the opportunity; nothing refills it on
-resume, fork, or compaction.
+resume, fork, or compaction. This repository deliberately keeps the one-continuation allowance as
+the only cap: the private lineage also removed its per-turn cap, and that divergence is not ported
+here.
 
 ## Reason text
 
-`[codex-stop-guard] The turn ended by announcing work it did not perform. Detector: jev
-work=authorized_unfinished. One continuation consumed for this turn. Continue the announced
-work, or state the blocker explicitly.`
+`[stop-guard] Turn ended mid-task (authorized_unfinished 0.87, receipts: in_progress_action, id
+sg_<session8>_<turn8>). Continuing once. Continue the announced work, or state the blocker
+explicitly. If nothing was pending, record the false positive: <feedback command>`
 
 ## Installing it (two traps that broke it once)
 
@@ -72,12 +77,12 @@ becomes permanent. The hook fires on every turn instead, and always prints what 
 Every turn end prints one short line, whether or not it acts:
 
 ```
-[stop-guard] resume | $0.000756 | 15 calls | 0.87/0.56 | $stop-guard-feedback sg_<session8>_<turn8>
-[stop-guard] no resume | $0.000756 | 15 calls | 0.43/0.56 | $stop-guard-feedback sg_<session8>_<turn8>
+[stop-guard] resume | $0.000756 | 15 calls | 0.87/0.60 | $stop-guard-feedback sg_<session8>_<turn8>
+[stop-guard] no resume | $0.000756 | 15 calls | 0.43/0.60 | $stop-guard-feedback sg_<session8>_<turn8>
 ```
 
-The final pipe section is a ready-to-send skill invocation for that exact execution; a call with no verdict records `unfinished` (the guard missed remaining work), which is the only case the owner files by hand — false resumes are self-reported by the resumed model. The `0.87/0.56` token is the measured `authorized_unfinished` probability over the effective floor
-(`-/0.56` when no jev call was made). `resume` appears only when the guard kept the turn going. Cost is the jev call; output tokens are
+The final pipe section is a ready-to-send skill invocation for that exact execution; a call with no verdict records `unfinished` (the guard missed remaining work), which is the only case the owner files by hand — false resumes are self-reported by the resumed model. The `0.87/0.60` token is the measured `authorized_unfinished` probability over the effective floor
+(`-/0.60` when no jev call was made). `resume` appears only when the guard kept the turn going. Cost is the jev call; output tokens are
 free on this route, so input tokens are the whole cost story. Per-call cost is in the decision log.
 
 ## The unique id

@@ -5,23 +5,28 @@
 // gates pass, and the durable allowance is consumed before any continuation is emitted, so a turn can
 // never be continued twice.
 
-import { factsFor, textsFor } from "../jev/gates.ts";
+import { factsFor, textReceipts, textsFor } from "../jev/gates.ts";
 
 const STATE_DIR = Deno.env.get("CODEX_STOP_GUARD_DIR") ??
   `${Deno.env.get("HOME")}/.local/state/codex-stop-guard`;
 /** This checkout, resolved from the hook's own location, so no machine-specific path is baked in. */
-const REPO = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
+const REPO = Deno.env.get("CODEX_STOP_GUARD_REPO") ??
+  new URL("..", import.meta.url).pathname.replace(/\/$/, "");
 /** The detector runtime is a separate checkout; this default keeps its conventional location. */
-const JEV_REPO = `${Deno.env.get("HOME")}/repos/0x4007/jev-sandbox`;
+const JEV_REPO = Deno.env.get("CODEX_STOP_GUARD_JEV_REPO") ??
+  `${Deno.env.get("HOME")}/repos/0x4007/jev-sandbox`;
+/** The uv executable that runs the python probe runner. */
+const UV = Deno.env.get("CODEX_STOP_GUARD_UV") ?? "uv";
 const DRY_RUN = Deno.env.get("CODEX_STOP_GUARD_DRY_RUN") === "1";
 
 /** Minimum probability of `authorized_unfinished` required before resuming.
- *  Set from the logged distribution, not guessed: real stops land at 0.59-0.96 and the
- *  false ones at 0.48-0.55. Override with CODEX_STOP_GUARD_MIN_PROBABILITY. */
+ *  The probe policy floor: v3 separates stops (0.59-0.96) from false ones (0.48-0.55);
+ *  0.6 was the frozen zero-false-resume choice. Override with CODEX_STOP_GUARD_PROBE_FLOOR. */
 const CONTINUE_MIN_PROBABILITY = Number(
-  Deno.env.get("CODEX_STOP_GUARD_MIN_PROBABILITY") ??
+  Deno.env.get("CODEX_STOP_GUARD_PROBE_FLOOR") ??
+    Deno.env.get("CODEX_STOP_GUARD_MIN_PROBABILITY") ??
     Deno.env.get("CODEX_STOP_GUARD_MIN_CONFIDENCE") ??
-    "0.56",
+    "0.6",
 );
 
 interface Event {
@@ -49,8 +54,15 @@ interface Decision {
  *  travel inside the reason -- it is the only text that survives a continuation. */
 function continueReason(evidence: unknown, id: string): string {
   const jev = (evidence as { jev?: Verdict } | undefined)?.jev;
+  const tr =
+    (evidence as { text_receipts?: Record<string, boolean> } | undefined)
+      ?.text_receipts ?? {};
+  const fired = Object.entries(tr).filter(([, v]) => v).map(([k]) =>
+    k.replace(/^gate_/, "")
+  );
+  const receiptPart = fired.length ? `, receipts: ${fired.join(",")}` : "";
   const detail = jev
-    ? ` (${jev.choice ?? "?"} ${(jev.confidence ?? 0).toFixed(2)}${
+    ? ` (${jev.choice ?? "?"} ${(jev.confidence ?? 0).toFixed(2)}${receiptPart}${
       jev.cost_usd != null ? `, $${jev.cost_usd.toFixed(6)}` : ""
     }, id ${id})`
     : ` (id ${id})`;
@@ -230,10 +242,17 @@ interface Verdict {
 }
 
 async function judge(request: string, final: string): Promise<Verdict | undefined> {
-  const questions = await Deno.readTextFile(`${REPO}/jev/questions-mjolnir-work.json`);
+  // Probe by default; `CODEX_STOP_GUARD_RUBRIC=work` restores the legacy rubric.
+  const legacy = Deno.env.get("CODEX_STOP_GUARD_RUBRIC") === "work";
+  const questions = await Deno.readTextFile(
+    legacy
+      ? `${REPO}/jev/questions-mjolnir-work.json`
+      : `${REPO}/jev/questions-present-tense-v3.json`,
+  );
   // Route through `experiment.run_json` so usage and cost are captured: output tokens are
   // free, so input tokens are the whole cost story. A cached replay is reported as a replay
-  // rather than counted as spend.
+  // rather than counted as spend. The probe mode derives its synthetic choice against the
+  // floor sent in the payload, so the hook and an offline scorer agree on the same rule.
   const script = `
 import json, sys
 from jev_sandbox import route
@@ -245,24 +264,36 @@ exp = experiment.run_json(
     {"user_request": payload["request"][:900], "assistant_final": payload["final"][:1200]},
     questions,
 )
-try:
-    a = exp.choices["work"]
-except Exception:
-    a = exp.nouls["work"]
-print(json.dumps({
-    "choice": getattr(a, "choice", None),
-    "confidence": getattr(a, "confidence", None),
-    "probabilities": getattr(a, "probabilities", None),
+if payload["mode"] == "work":
+    try:
+        a = exp.choices["work"]
+    except Exception:
+        a = exp.nouls["work"]
+    out = {
+        "choice": getattr(a, "choice", None),
+        "confidence": getattr(a, "confidence", None),
+        "probabilities": getattr(a, "probabilities", None),
+    }
+else:
+    a = exp.nouls["present_tense_v3"]
+    p = float(a.noul)
+    out = {
+        "choice": "authorized_unfinished" if p >= payload["floor"] else "finished",
+        "confidence": p,
+        "probabilities": {"authorized_unfinished": p, "finished": 1 - p, "waiting": 0.0, "unclear": 0.0},
+    }
+out.update({
     "input_tokens": exp.input_tokens,
     "output_tokens": exp.output_tokens,
     "cost_usd": exp.cost_usd,
     "elapsed_ms": exp.elapsed_ms,
     "replayed": bool((exp.cache or {}).get("replayed")),
     "request_id": getattr(exp, "request_id", None),
-}))
+})
+print(json.dumps(out))
 `;
   try {
-    const proc = new Deno.Command("uv", {
+    const proc = new Deno.Command(UV, {
       args: ["run", "python", "-c", script],
       cwd: JEV_REPO,
       stdin: "piped",
@@ -270,7 +301,15 @@ print(json.dumps({
       stderr: "piped",
     }).spawn();
     const writer = proc.stdin.getWriter();
-    await writer.write(new TextEncoder().encode(JSON.stringify({ request, final, questions })));
+    await writer.write(
+      new TextEncoder().encode(JSON.stringify({
+        request,
+        final,
+        questions,
+        mode: legacy ? "work" : "probe",
+        floor: CONTINUE_MIN_PROBABILITY,
+      })),
+    );
     await writer.close();
     const { stdout, stderr, code } = await proc.output();
     const out = new TextDecoder().decode(stdout).trim();
@@ -333,6 +372,13 @@ async function decide(event: Event): Promise<Decision> {
     if (texts.request) request = texts.request;
     if (!final && texts.final) final = texts.final;
   } catch { /* keep the fallbacks */ }
+  // Mechanical unfinished-shape receipts plus contradicted completion claims. These catch
+  // the claim-vs-truth class a text-only probe reads as completion.
+  const textFacts = textReceipts(request, final);
+  const claimContradicted = (facts.gate_claim_evidence ?? []).some((c) =>
+    c.status === "contradicted"
+  );
+  const receiptContinue = Object.values(textFacts).some(Boolean);
   const verdict = await judge(request, final);
   if (!verdict || typeof verdict.__error === "string") {
     return { allow: true, reason: "jev-error", evidence: { ...facts, error: verdict?.__error ?? "no verdict" } };
@@ -346,24 +392,29 @@ async function decide(event: Event): Promise<Decision> {
     : 0;
   const evidence = {
     ...facts,
+    text_receipts: textFacts,
+    claim_contradicted: claimContradicted,
     jev: verdict,
     floor: CONTINUE_MIN_PROBABILITY,
     unfinished,
     request_head: request.slice(0, 900),
     final_head: final.slice(0, 1200),
   };
+  // Policy: continue when the probe clears its floor, when any mechanical receipt fires,
+  // or when a completion claim is contradicted by the turn's own receipts. Supported and
+  // unobserved claim states stay diagnostic in the log; only contradiction authorizes action.
+  // The probe gate reads the probability jev assigns to authorized_unfinished, not `confidence`:
+  // `confidence` is jev's certainty about its own pick and overlaps badly between real stops
+  // (0.36-0.94) and false ones, while the option probability separates far better
+  // (stopped ~0.59-0.96 against ~0.48-0.55 for the false ones).
+  const probeContinue = choice === "authorized_unfinished" &&
+    unfinished >= CONTINUE_MIN_PROBABILITY;
+  if (probeContinue || receiptContinue || claimContradicted) {
+    return { allow: false, reason: "continue", evidence };
+  }
   if (choice === "finished") return { allow: true, reason: "decided-finished", evidence };
   if (choice === "waiting") return { allow: true, reason: "decided-waiting", evidence };
-  if (choice === "unclear") return { allow: true, reason: "decided-unclear", evidence };
-  if (choice !== "authorized_unfinished") return { allow: true, reason: "decided-unclear", evidence };
-  // Gate on the probability jev assigns to authorized_unfinished, not on `confidence`.
-  // `confidence` is jev's certainty about its own pick and overlaps badly between real
-  // stops (0.36-0.94) and false ones; the option probability separates far better
-  // (stopped ~0.59-0.96 against ~0.48-0.55 for the false ones).
-  if (unfinished < CONTINUE_MIN_PROBABILITY) {
-    return { allow: true, reason: "decided-unclear", evidence };
-  }
-  return { allow: false, reason: "continue", evidence };
+  return { allow: true, reason: "decided-unclear", evidence };
 }
 
 if (import.meta.main) {

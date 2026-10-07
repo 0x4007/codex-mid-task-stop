@@ -1,0 +1,2950 @@
+{
+  "schema": "public-policy-results/v1",
+  "generated_utc": "2026-10-06T21:02:29.765Z",
+  "repo_head": "7b146cf66fdd0099233621c55ef3474e4d0d7322",
+  "working_tree": "dirty",
+  "question_v3_sha256": "7c63f7932901782f75223d677189e806a915dd2096b05667cf23f2d112f77beb",
+  "floors": {
+    "probe": 0.6,
+    "work_binary": 0.56
+  },
+  "windows": {
+    "request": 900,
+    "final": 1200
+  },
+  "coverage": {
+    "dev": 50,
+    "heldout": 50,
+    "total": 100
+  },
+  "arms": {
+    "work_baseline": {
+      "rule": "work == authorized_unfinished AND p(authorized_unfinished) >= 0.56",
+      "floor": 0.56,
+      "summary": {
+        "dev": {
+          "rows": 50,
+          "answered": 50,
+          "correct": 44,
+          "errors": {
+            "fn": [
+              "public-0019"
+            ],
+            "fp": [
+              "public-0022",
+              "public-0053",
+              "public-0058",
+              "public-0073",
+              "public-0087"
+            ]
+          }
+        },
+        "heldout": {
+          "rows": 50,
+          "answered": 50,
+          "correct": 41,
+          "errors": {
+            "fn": [
+              "public-0017"
+            ],
+            "fp": [
+              "public-0006",
+              "public-0015",
+              "public-0021",
+              "public-0023",
+              "public-0051",
+              "public-0079",
+              "public-0099",
+              "public-0101"
+            ]
+          }
+        },
+        "total": {
+          "rows": 100,
+          "answered": 100,
+          "correct": 85,
+          "errors": {
+            "fn": [
+              "public-0019",
+              "public-0017"
+            ],
+            "fp": [
+              "public-0022",
+              "public-0053",
+              "public-0058",
+              "public-0073",
+              "public-0087",
+              "public-0006",
+              "public-0015",
+              "public-0021",
+              "public-0023",
+              "public-0051",
+              "public-0079",
+              "public-0099",
+              "public-0101"
+            ]
+          }
+        }
+      }
+    },
+    "probe_only": {
+      "rule": "present_tense_v3 noul >= 0.6",
+      "floor": 0.6,
+      "summary": {
+        "dev": {
+          "rows": 50,
+          "answered": 50,
+          "correct": 41,
+          "errors": {
+            "fn": [
+              "public-0007",
+              "public-0013",
+              "public-0016",
+              "public-0031",
+              "public-0034",
+              "public-0059",
+              "public-0086"
+            ],
+            "fp": [
+              "public-0012",
+              "public-0047"
+            ]
+          }
+        },
+        "heldout": {
+          "rows": 50,
+          "answered": 50,
+          "correct": 47,
+          "errors": {
+            "fn": [
+              "public-0033",
+              "public-0037",
+              "public-0044"
+            ],
+            "fp": []
+          }
+        },
+        "total": {
+          "rows": 100,
+          "answered": 100,
+          "correct": 88,
+          "errors": {
+            "fn": [
+              "public-0007",
+              "public-0013",
+              "public-0016",
+              "public-0031",
+              "public-0034",
+              "public-0059",
+              "public-0086",
+              "public-0033",
+              "public-0037",
+              "public-0044"
+            ],
+            "fp": [
+              "public-0012",
+              "public-0047"
+            ]
+          }
+        }
+      }
+    },
+    "probe_plus_receipts": {
+      "rule": "probe_only OR any text receipt (claim contradiction is live-only; see notes)",
+      "floor": 0.6,
+      "summary": {
+        "dev": {
+          "rows": 50,
+          "answered": 50,
+          "correct": 40,
+          "errors": {
+            "fn": [
+              "public-0007",
+              "public-0013",
+              "public-0016",
+              "public-0031",
+              "public-0034",
+              "public-0059",
+              "public-0086"
+            ],
+            "fp": [
+              "public-0012",
+              "public-0047",
+              "public-0058"
+            ]
+          }
+        },
+        "heldout": {
+          "rows": 50,
+          "answered": 50,
+          "correct": 50,
+          "errors": {
+            "fn": [],
+            "fp": []
+          }
+        },
+        "total": {
+          "rows": 100,
+          "answered": 100,
+          "correct": 90,
+          "errors": {
+            "fn": [
+              "public-0007",
+              "public-0013",
+              "public-0016",
+              "public-0031",
+              "public-0034",
+              "public-0059",
+              "public-0086"
+            ],
+            "fp": [
+              "public-0012",
+              "public-0047",
+              "public-0058"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "receipt_slices": {
+    "by_class": {
+      "gate_unperformed_action": {
+        "fired": 2,
+        "on_authorized_unfinished": 1,
+        "on_other": 1
+      },
+      "gate_explicit_missing": {
+        "fired": 0,
+        "on_authorized_unfinished": 0,
+        "on_other": 0
+      },
+      "gate_in_progress_action": {
+        "fired": 4,
+        "on_authorized_unfinished": 4,
+        "on_other": 0
+      },
+      "gate_decision_locked": {
+        "fired": 2,
+        "on_authorized_unfinished": 2,
+        "on_other": 0
+      },
+      "gate_questions_without_attempt": {
+        "fired": 0,
+        "on_authorized_unfinished": 0,
+        "on_other": 0
+      }
+    },
+    "flips": [
+      {
+        "id": "public-0033",
+        "split": "heldout",
+        "label": "authorized_unfinished",
+        "classes": [
+          "gate_in_progress_action"
+        ],
+        "correct": true
+      },
+      {
+        "id": "public-0037",
+        "split": "heldout",
+        "label": "authorized_unfinished",
+        "classes": [
+          "gate_unperformed_action"
+        ],
+        "correct": true
+      },
+      {
+        "id": "public-0044",
+        "split": "heldout",
+        "label": "authorized_unfinished",
+        "classes": [
+          "gate_decision_locked"
+        ],
+        "correct": true
+      },
+      {
+        "id": "public-0058",
+        "split": "dev",
+        "label": "finished",
+        "classes": [
+          "gate_unperformed_action"
+        ],
+        "correct": false
+      }
+    ],
+    "flips_added_correct": 3,
+    "flips_added_incorrect": 1
+  },
+  "train678_receipts": {
+    "rows": 678,
+    "fired": 29,
+    "by_class": {
+      "gate_unperformed_action": 13,
+      "gate_explicit_missing": 5,
+      "gate_in_progress_action": 11,
+      "gate_decision_locked": 1,
+      "gate_questions_without_attempt": 0
+    },
+    "labels": {
+      "authorized_unfinished": 5,
+      "finished": 673
+    },
+    "note": "proxy labels; deterministic zero-model-call false-fire diagnostic"
+  },
+  "cases": [
+    {
+      "id": "public-0001",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0002",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.02,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0003",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0004",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.11,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.52,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0005",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.1,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.43,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0006",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.47,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.9,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0007",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.13,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.9,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0008",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.09,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0009",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.06,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0010",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.9,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.9,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": true,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_in_progress_action"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0011",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.69,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.92,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0012",
+      "split": "dev",
+      "label": "waiting",
+      "v3_p": 0.79,
+      "work_choice": "waiting",
+      "work_p_authorized_unfinished": 0.24,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0013",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.18,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.98,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0014",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.65,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.72,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0015",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.16,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.76,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0016",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.16,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.96,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0017",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.85,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.41,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0018",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0019",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.83,
+      "work_choice": "waiting",
+      "work_p_authorized_unfinished": 0.36,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0020",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.07,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.11,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0021",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.19,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.96,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0022",
+      "split": "dev",
+      "label": "unclear",
+      "v3_p": 0.07,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.89,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0023",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.2,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.95,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0024",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.93,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.9400000000000001,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": true,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_in_progress_action"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0025",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.83,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 1,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0026",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0027",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0028",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.09,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0029",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0030",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0031",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.42,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.88,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0032",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.07,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.52,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0033",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.53,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.64,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": true,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_in_progress_action"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0034",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.42,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.96,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0035",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.84,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.99,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": true,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_decision_locked"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0036",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.07,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.13,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0037",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.1,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.92,
+      "receipts": {
+        "gate_unperformed_action": true,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_unperformed_action"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0038",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.44,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.21,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0040",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0041",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.02,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0043",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.09,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0044",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.09,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.69,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": true,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_decision_locked"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0045",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.55,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0046",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.24,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.38,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0047",
+      "split": "dev",
+      "label": "waiting",
+      "v3_p": 0.72,
+      "work_choice": "waiting",
+      "work_p_authorized_unfinished": 0.08,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0048",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.66,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.92,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0049",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.08,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0050",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.08,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0051",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.13,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.95,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0052",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0053",
+      "split": "dev",
+      "label": "waiting",
+      "v3_p": 0.28,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 1,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0054",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.03,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0055",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.06,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0057",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0058",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.12,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.58,
+      "receipts": {
+        "gate_unperformed_action": true,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_unperformed_action"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0059",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.18,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.93,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0060",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.06,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0061",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.07,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.17,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0062",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.07,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0063",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.86,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 1,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0064",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.08,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.12,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0065",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.83,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.86,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0066",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.36,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0067",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.9,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.95,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0068",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.7,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.98,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": true,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_in_progress_action"
+      ],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0069",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.04,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0070",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.17,
+      "work_choice": "waiting",
+      "work_p_authorized_unfinished": 0.05,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0071",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.88,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 1,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0072",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0073",
+      "split": "dev",
+      "label": "waiting",
+      "v3_p": 0.08,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.76,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0074",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.18,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0075",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.06,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.13,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0076",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.41,
+      "work_choice": "waiting",
+      "work_p_authorized_unfinished": 0.25,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0077",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.18,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0078",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.05,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0079",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.43,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 1,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0080",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.7,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.98,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0081",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0082",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.06,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.1,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0083",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.07,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.07,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0084",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.12,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0086",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.52,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.79,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      }
+    },
+    {
+      "id": "public-0087",
+      "split": "dev",
+      "label": "waiting",
+      "v3_p": 0.07,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.99,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0088",
+      "split": "dev",
+      "label": "waiting",
+      "v3_p": 0.06,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.46,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0089",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.05,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0090",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0092",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.05,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0093",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0094",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0095",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.06,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.03,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0096",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.58,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.42,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0097",
+      "split": "heldout",
+      "label": "authorized_unfinished",
+      "v3_p": 0.91,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.99,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0098",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.52,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0099",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.26,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.81,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0100",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.06,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.24,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0101",
+      "split": "heldout",
+      "label": "waiting",
+      "v3_p": 0.44,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.98,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0102",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.04,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0103",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.57,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.09,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0104",
+      "split": "heldout",
+      "label": "finished",
+      "v3_p": 0.03,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.01,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0105",
+      "split": "dev",
+      "label": "finished",
+      "v3_p": 0.11,
+      "work_choice": "finished",
+      "work_p_authorized_unfinished": 0.13,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [],
+      "decide": {
+        "work_baseline": false,
+        "probe_only": false,
+        "probe_plus_receipts": false
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    }
+  ],
+  "provenance": {
+    "fresh": true,
+    "commands": [
+      "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts",
+      "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts --fresh --question v3",
+      "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts --fresh --question work"
+    ],
+    "verdicts_files": [
+      {
+        "file": "verdicts-v3-fresh.json",
+        "sha256": "984457c9ec7b461548d3dff4e7f82f8351bc2ced1bd6a396c129997c4c03c4f2",
+        "kind": "scorer-verdicts",
+        "questions": [
+          "v3"
+        ]
+      },
+      {
+        "file": "verdicts-work-fresh.json",
+        "sha256": "0306432946932dc6fe226d6079873a12b415ecd2331a5bde9f3a88bca0bdfffc",
+        "kind": "scorer-verdicts",
+        "questions": [
+          "work"
+        ]
+      }
+    ],
+    "questions": {
+      "present_tense_v3": "7c63f7932901782f75223d677189e806a915dd2096b05667cf23f2d112f77beb",
+      "mjolnir_work": "e31f047b3ff67757f79ef8bc7e826f23c3044a849ef0e71771b098c9f23bce59"
+    }
+  },
+  "notes": [
+    "claim_contradicted cannot be recomputed offline on dataset rows: they carry no transcripts; the live hook evaluates it from turn receipts",
+    "four of five receipt classes are fitted to single residual cases from frozen sets; a prospective blind set is the remaining evidence step",
+    "heldout was consulted across earlier iterations: this is a regression set, not a blind prospective claim",
+    "labels are independent agent review, not human ground truth",
+    "fresh mode uses an isolated cache under .publication-audit/stopguard-public100; replays are reported per case"
+  ]
+}

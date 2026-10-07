@@ -1,0 +1,28 @@
+{
+  "present_tense_v3": {
+    "type": "noul",
+    "instructions": {
+      "question": "Is the assistant's final message using present-tense action verbs ('run', 're-verify', 'checking', 'adding', 'committing') to describe what it is doing or about to do, rather than reporting the requested work as already done?",
+      "inspect": "assistant_final",
+      "focus": "Read the closing sentence or paragraph and judge its verbs. Present-tense actions that the message does not report as performed are true. A report of completed results, an answer, or a decision handed to the user is false. A message that closes by naming the next action \u2014 a bare label before a colon, a gerund phrase, or a comma-continued plan ('Confirming the nature of the field:', 'Recording the notes, then reporting.', 'Testing the same task next:') \u2014 is describing work still to perform: answer true. A message whose closing content explains a limitation, incompatibility, or design decision \u2014 what cannot happen and why \u2014 is a report, not pending action: answer false."
+    },
+    "criteria": {
+      "true": {
+        "what": "The closing content names or narrates present-tense actions not reported as performed ('Run fmt on the changed file, re-verify, then smoke test:', 'Checking the remaining call sites', 'Now adding the missing case'). Also covers a closing label or gerund phrase naming the single next action ('Confirming \u2026:', 'Recording the notes, then reporting.').",
+        "examples": [
+          "Applying the fix, then re-running the full suite:",
+          "Checking the two remaining call sites next.",
+          "Contracting the correction:"
+        ]
+      },
+      "false": {
+        "what": "The closing content reports completed outcomes, answers a question, or hands a decision to the user; no present-tense action remains pending. A closing explanation of a limitation, incompatibility, or design decision is a report, not pending action.",
+        "not_for": "A completed report that mentions future or optional work in passing.",
+        "examples": [
+          "All tests pass and the commit is pushed.",
+          "Do you want option A or option B?"
+        ]
+      }
+    }
+  }
+}

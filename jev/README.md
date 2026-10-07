@@ -18,16 +18,25 @@ already solve parts of this problem; we adopt theirs rather than rebuild.
 
 One semantic question, plus mechanical preconditions read from the transcript.
 
-**`work`** (Mjolnir's rubric, Choice): `finished` | `authorized_unfinished` | `waiting` | `unclear`.
+**`present_tense_v3`** (default, TypeSafe Noul): `noul >= floor` where the floor is 0.6 by
+default (`CODEX_STOP_GUARD_PROBE_FLOOR` -> `CODEX_STOP_GUARD_MIN_PROBABILITY` ->
+`CODEX_STOP_GUARD_MIN_CONFIDENCE` -> 0.6).
 
-**Continue only when** `work == authorized_unfinished` **and** the turn ended without a tool
-call **and** `stop_hook_active` is false.
+**`work`** (legacy, Mjolnir's rubric, Choice; `CODEX_STOP_GUARD_RUBRIC=work`):
+`finished` | `authorized_unfinished` | `waiting` | `unclear`; continue when
+`work == authorized_unfinished` with p >= 0.56.
 
-- `finished` — requested work complete, cancelled, superseded, or the user only asked a question.
-- `waiting` — background work or a sub-agent is in flight; continuing would duplicate it.
-- `unclear` — refuse.
+**Continue when** (any arm, in either rubric) the turn ended without a tool call, the allowance
+is unspent, and any of these holds:
 
-Latency ~200ms per call. Configuration: `detector-v2.json`.
+- the probe clears its floor;
+- any mechanical text receipt fires (`gate_unperformed_action`, `gate_explicit_missing`,
+  `gate_in_progress_action`, `gate_decision_locked`, `gate_questions_without_attempt`);
+- a completion claim in the final text is contradicted by the turn's own receipts
+  (`claim_contradicted`; supported/unobserved stay diagnostic in the log).
+
+`waiting` and `unclear` verdicts still allow the turn. Latency ~200ms per call.
+Configuration: `detector-v2.json`; policy detail and measured results: `../docs/PUBLIC_POLICY.md`.
 
 ## Why the earlier attempts failed — implementation, not the model
 
@@ -48,9 +57,12 @@ four-way Choice, and the `waiting` class became expressible.
 
 | File | What |
 | --- | --- |
-| `detector-v2.json` | **Current configuration** — Mjolnir's question, Belay's preconditions, the policy. |
-| `questions-mjolnir-work.json` | The live `work` question the hook loads. |
-| `gates.ts` | Belay's mechanical preconditions, read from the transcript with no model call. |
+| `detector-v2.json` | **Current configuration** — the probe question, Belay's preconditions, the composed policy. |
+| `questions-present-tense-v3.json` | The live default `present_tense_v3` question (byte-exact copy of `backtest/questions-present-tense-v3.json`, SHA-256 `7c63f7932901782f75223d677189e806a915dd2096b05667cf23f2d112f77beb`). |
+| `questions-mjolnir-work.json` | The legacy `work` question, selected by `CODEX_STOP_GUARD_RUBRIC=work`. |
+| `gates.ts` | Belay's mechanical preconditions plus the claim/receipt machinery, read from the transcript with no model call. |
+| `score-public-policy.ts`, `public-policy-results.json` | Score and publish the policy on the public reviewed 100. |
+| `claims_test.ts` | Offline receipt/claim unit tests. |
 | `extract-triggers.py`, `build-corpus.py`, `build-truth-set.py` | Read-only local dataset builders over `~/.codex`; they write the gitignored `triggers.jsonl`, `corpus.jsonl` and `truth.jsonl`. |
 | `build-review-set.py` | Emit a human-adjudicable review set from a scored corpus; writes the gitignored `review-set.md`. |
 | `score-rubric.py`, `score-with-jev.py` | Score a local case set against the live question file (`score-rubric.py` takes `--questions`, `--cases`, `--out`); both write gitignored `score*.json`. |
@@ -60,10 +72,10 @@ four-way Choice, and the `waiting` class became expressible.
 
 ## Status
 
-Working on real data; **not yet calibrated against human labels.** Precision and recall are
-unknown until a locally generated review set is adjudicated. Known residual error: progress
-reports that mention remaining work ("Committed cleanly… Working tree is clean") can be
-classified `authorized_unfinished`, which is the deliberate trade-off in Mjolnir's rubric, and
-the reason Belay insists on mechanical preconditions.
+Working on real data; **not calibrated against human labels.** The labels are independent blind
+agent review, not human ground truth. On the public reviewed 100 the shipped policy scores 90
+(dev 40/50, heldout 50/50) against probe-only 88 and the legacy work baseline 85; details and
+limits are in `../docs/PUBLIC_POLICY.md`. Heldout was consulted across earlier iterations, so it
+is a regression set, not a blind prospective claim.
 
 The public `dataset/` slice is separate and published-ready: 100 reviewed records with independent blind agent-review labels (`finished` 57, `authorized_unfinished` 26, `waiting` 16, `unclear` 1) and a frozen `dev` 50 / `heldout` 50 split. `dev` may support prompt/rubric refinement and teaching; `heldout` is evaluation-only. See `dataset/DATASET.md`.

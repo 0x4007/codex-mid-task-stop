@@ -143,7 +143,7 @@ if (import.meta.main) {
   let final = row.evidence?.final_head ?? "";
   if ((!request || !final) && row.transcript) {
     try {
-      const texts = textsFor(row.transcript);
+      const texts = textsFor(row.transcript, { turnId: row.turn, stopAt: row.at });
       request = request || texts.request;
       final = final || texts.final;
     } catch { /* transcript gone; the decision row still resolves via jev/show.ts */ }

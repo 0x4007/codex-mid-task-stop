@@ -15,10 +15,12 @@ shipping automatic continuation on an unproven signal.
 On every turn end the hook:
 
 1. runs deterministic gates read from the transcript, with no model call (`jev/gates.ts`);
-2. consults one semantic `work` Choice question — `finished` | `authorized_unfinished` |
-   `waiting` | `unclear` — only when the gates pass;
-3. consumes a one-continuation allowance for `(session_id, turn_id)` before emitting anything;
-4. logs every decision with its evidence, and prints one line whether or not it acts.
+2. consults the semantic `present_tense_v3` Noul question (default) — or the legacy `work`
+   Choice when `CODEX_STOP_GUARD_RUBRIC=work` — only when the gates pass;
+3. continues when the probe clears its floor (default 0.6), when any mechanical text receipt
+   fires, or when a completion claim is contradicted by the turn's own receipts;
+4. consumes a one-continuation allowance for `(session_id, turn_id)` before emitting anything;
+5. logs every decision with its evidence, and prints one line whether or not it acts.
 
 ## Layout
 
@@ -26,9 +28,13 @@ On every turn end the hook:
 | --- | --- |
 | `hook/stop-hook.ts` | The `Stop` hook: gates, semantic judgement, allowance, decision log, visible line. |
 | `hook/README.md` | Wiring, flow, the model gate, the allowance, the unique id and feedback handling. |
-| `jev/gates.ts` | Mechanical preconditions read from the transcript, no model call. |
+| `jev/gates.ts` | Mechanical preconditions and the receipt machinery, read from the transcript, no model call. |
 | `jev/detector-v2.json` | Current detector policy and its published sources. |
-| `jev/questions-mjolnir-work.json` | The live `work` question the hook loads. |
+| `jev/questions-present-tense-v3.json` | The live `present_tense_v3` Noul question the hook loads by default. |
+| `jev/questions-mjolnir-work.json` | The legacy `work` question, selected by `CODEX_STOP_GUARD_RUBRIC=work`. |
+| `jev/score-public-policy.ts` | Scorer for the decision policy on the public 100, fresh or from verdict files. |
+| `jev/public-policy-results.json` | Published policy results on the public reviewed 100 (see `docs/PUBLIC_POLICY.md`). |
+| `jev/claims_test.ts` | Offline receipt/claim unit tests (`deno test --allow-read jev/claims_test.ts`). |
 | `jev/feedback.ts`, `jev/import-feedback.ts`, `jev/show.ts`, `jev/spend.ts` | Label a decision, fold feedback into a local corpus, resolve an execution, report spend. |
 | `probe/` | The isolated harness that proved a blocking `Stop` hook re-enters the loop. |
 | `skills/stop-guard-feedback/SKILL.md` | Skill that turns a `[stop-guard]` line into a labelled example. |
@@ -41,9 +47,12 @@ intervene. State lives outside the repository: `$CODEX_STOP_GUARD_DIR`, defaulti
 `$HOME/.local/state/codex-stop-guard`, holds `decisions.jsonl`, `feedback.jsonl` and the
 per-turn allowances.
 
-The semantic step runs the `work` question through the separate `jev-sandbox` Python package
-(`uv run python`, from a private checkout outside this repository). That package is not part of
-this repository, so in a fresh checkout the detector answers `jev-error`, the hook allows the turn,
+The semantic step runs the `present_tense_v3` question (or `work` under
+`CODEX_STOP_GUARD_RUBRIC=work`) through the separate `jev-sandbox` Python package
+(`uv run python`, from a checkout outside this repository; `HOME/repos/0x4007/jev-sandbox` is the
+default, with `CODEX_STOP_GUARD_JEV_REPO` and `CODEX_STOP_GUARD_UV` overrides, and `REPO` resolved
+from the hook's own location or `CODEX_STOP_GUARD_REPO`). That package is not part of this
+repository, so in a fresh checkout the detector answers `jev-error`, the hook allows the turn,
 and the deterministic gates and probe harness still work.
 
 ## Local-only datasets
@@ -75,6 +84,11 @@ Validate the published corpus (no network, no model calls):
 ```sh
 deno run --allow-read jev/dataset/validate.ts
 ```
+
+The decision policy (`probe_plus_receipts`) is measured on the same reviewed 100: 90/100
+(dev 40/50, heldout 50/50) against the legacy work baseline 85/100 and probe-only 88/100.
+Recompute it fresh (`--fresh`) or by composition over saved verdict files; see
+`docs/PUBLIC_POLICY.md` for the method, tables, and limits.
 
 ## Private backtesting sandbox
 

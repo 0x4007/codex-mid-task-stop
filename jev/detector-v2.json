@@ -37,14 +37,15 @@
     "known_limitation": "gate_changed_something matches a tool-name pattern; shell heredoc writes and in-place editors that do not name a mutation tool are not detected. Widen the pattern or read FileChange items instead before relying on this gate."
   },
   "policy": {
-    "continue_if": "work == authorized_unfinished AND all mechanical_preconditions hold",
+    "continue_if": "probe (present_tense_v3 noul >= 0.6 by default; legacy work Choice with p >= 0.56 under CODEX_STOP_GUARD_RUBRIC=work) OR any text receipt (unperformed action, explicit missing, in-progress action, decision locked, questions without attempt) OR a completion claim contradicted by the turn's receipts; AND all mechanical_preconditions hold",
     "refuse_when": [
-      "work == finished",
-      "work == waiting",
-      "work == unclear",
+      "probe below floor AND no text receipt fires AND no contradicted completion claim",
       "any mechanical precondition false"
     ],
     "one_continuation_per_original_turn": true,
-    "rationale_waiting": "waiting is refused because continuing would duplicate work already in flight; my earlier two-noul policy had no such class and would have fired on it."
+    "rationale_waiting": "waiting is refused because continuing would duplicate work already in flight; my earlier two-noul policy had no such class and would have fired on it.",
+    "probe_floor": 0.6,
+    "work_binary_floor": 0.56,
+    "default_question": "present_tense_v3"
   }
 }
