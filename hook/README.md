@@ -25,10 +25,11 @@ Stop event
   |- gate_ends_without_tool_call false  -> allow   (free; ../jev/gates.ts, no model)
   |- allowance for (session, turn) spent-> allow
   |- jev `present_tense_v3` noul (~200ms; `work` Choice under CODEX_STOP_GUARD_RUBRIC=work)
-  |    probe >= floor (default 0.6)      -> consume allowance, then continue
   |    any mechanical text receipt       -> consume allowance, then continue
   |    a completion claim contradicted   -> consume allowance, then continue
-  |    otherwise                         -> allow
+  |    probe >= floor (default 0.6)
+  |      with no waiting-state marker    -> consume allowance, then continue
+  |    otherwise (incl. waiting markers) -> allow
 ```
 
 Every decision is appended to `decisions.jsonl` with its evidence, whether or not it continued.

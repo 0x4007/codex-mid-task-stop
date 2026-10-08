@@ -1,7 +1,12 @@
 // Receipt/claim unit tests. Run: deno test --allow-read jev/claims_test.ts
 //
 // Offline: pure functions from ./gates.ts plus file hashes; no model call, no network.
-import { claimEvidenceFor, classifyCommand, textReceipts } from "./gates.ts";
+import {
+  claimEvidenceFor,
+  classifyCommand,
+  textReceipts,
+  waitingSuppressor,
+} from "./gates.ts";
 
 function assertEq<T>(actual: T, expected: T, label: string): void {
   if (actual !== expected) {
@@ -268,6 +273,100 @@ Deno.test("mixed-delimiter quoted examples are stripped", () => {
     true,
     "unquoted-fires",
   );
+});
+
+Deno.test("promised-action receipt fires on first-person intent to act", () => {
+  // Positive: the three dev FN shapes this rule fixes.
+  for (
+    const [text, label] of [
+      ["1.5s is too fast to read. Let me give it a clear few seconds and make the wait feel intentional.", "give"],
+      ["`setsid` isn't available on macOS. Let me use the background exec session instead, which keeps a live handle.", "use"],
+      ["Yes. I’ll switch to hourly checks and leave the active workers untouched.", "switch"],
+      ["Yes, I will switch to hourly checks and leave the active workers untouched.", "will-switch"],
+      ["I am going to switch to hourly checks.", "going-to-switch"],
+    ] as const
+  ) {
+    assertEq(textReceipts("", text).gate_promised_action, true, label);
+  }
+  // Negatives: meta verbs, pleasantries, waiting idioms, and offerings stay silent.
+  for (
+    const [text, label] of [
+      ["Let me know if that works.", "let-me-know"],
+      ["Let me explain the tradeoff.", "let-me-explain"],
+      ["Let me summarize the results.", "let-me-summarize"],
+      ["I’ll wait for the worker to finish.", "ill-wait"],
+      ["I’ll keep an eye on the CI run.", "ill-keep-an-eye"],
+      ["Should I switch it?", "offering-question"],
+      ["Do you want me to use the other session?", "offering-question-2"],
+      ["Switch it when you can.", "imperative"],
+    ] as const
+  ) {
+    assertEq(textReceipts("", text).gate_promised_action, false, label);
+  }
+});
+
+Deno.test("continuous-action receipt fires on first-person gerund, not monitoring", () => {
+  const applying =
+    "I’m applying the project’s UI and browser-debugging guidance to the plan now, because the remaining acceptance hinges on a guided extension UI.";
+  assertEq(textReceipts("", applying).gate_continuous_action, true, "applying");
+  const checking = "I’m checking the two authoritative JSONL histories now.";
+  assertEq(textReceipts("", checking).gate_continuous_action, true, "checking");
+  const verifying = "I am still verifying the acceptance matrix.";
+  assertEq(textReceipts("", verifying).gate_continuous_action, true, "still-verifying");
+  // Negatives: waiting states and negated first person must not fire.
+  for (
+    const [text, label] of [
+      ["I’m monitoring the second exact-head CI run.", "monitoring"],
+      ["I’m waiting for direction before resolving the conflicts.", "waiting"],
+      ["I’m watching the deploy.", "watching"],
+      ["I’m not working in a separate secondary worktree.", "negated"],
+      ["The monitoring dashboard recovered.", "third-person"],
+    ] as const
+  ) {
+    assertEq(textReceipts("", text).gate_continuous_action, false, label);
+  }
+});
+
+Deno.test("waiting suppressor marks waiting states only", () => {
+  for (
+    const [text, label] of [
+      ["I’m monitoring the second exact-head CI run and Codex’s review reaction.", "monitoring"],
+      ["The worker is editing both files and still running. Waiting for it to finish.", "still-running"],
+      ["Waiting for CI on the new tip before deploying.", "waiting-for"],
+      ["Holding for the sub-agent to return.", "holding-for"],
+      ["Waiting on the suite.", "waiting-on"],
+      ["I’ll report when it completes.", "when-it-completes"],
+    ] as const
+  ) {
+    assertEq(waitingSuppressor(text), true, label);
+  }
+  for (
+    const [text, label] of [
+      ["Done. All tests pass.", "done"],
+      ["Monitoring found and fixed a real defect.", "noun-monitoring"],
+      ["I haven’t restored opening it in your app yet.", "unperformed"],
+    ] as const
+  ) {
+    assertEq(waitingSuppressor(text), false, label);
+  }
+});
+
+Deno.test("unperformed-action tightening keeps named pending work, drops the aside", () => {
+  // Named pending work (the heldout row that must keep firing).
+  const named =
+    "I can recover context from the saved transcript here, but I haven’t restored opening it in your app yet. I haven’t changed your configuration or restarted anything.";
+  assertEq(textReceipts("", named).gate_unperformed_action, true, "named-pending");
+  // Explanatory aside about an untouched artifact (the dev false positive this tightens).
+  const aside =
+    "Yes. Hold-breath and wall-bracing should reduce sway to 25%, not eliminate it. This affects breathing/aim sway, not the strong recoil jerk itself. I have not changed it yet.";
+  assertEq(textReceipts("", aside).gate_unperformed_action, false, "aside-it");
+  const code =
+    "Breathing is providing the direction correctly. I have not changed the code yet.";
+  assertEq(textReceipts("", code).gate_unperformed_action, false, "aside-the-code");
+  // A named object still fires even in a short sentence.
+  const changes =
+    "I have not pushed or triggered anything; the workflow should wait for that commit.";
+  assertEq(textReceipts("", changes).gate_unperformed_action, true, "named-push");
 });
 
 Deno.test("composed policy: probe arm, receipt arm, and the published question hash", async () => {

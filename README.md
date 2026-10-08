@@ -17,8 +17,9 @@ On every turn end the hook:
 1. runs deterministic gates read from the transcript, with no model call (`jev/gates.ts`);
 2. consults the semantic `present_tense_v3` Noul question (default) — or the legacy `work`
    Choice when `CODEX_STOP_GUARD_RUBRIC=work` — only when the gates pass;
-3. continues when the probe clears its floor (default 0.6), when any mechanical text receipt
-   fires, or when a completion claim is contradicted by the turn's own receipts;
+3. continues when any mechanical text receipt fires, when a completion claim is contradicted by
+   the turn's own receipts, or when the probe clears its floor (default 0.6) with no waiting-state
+   marker in the final (receipts and contradictions override the marker);
 4. consumes a one-continuation allowance for `(session_id, turn_id)` before emitting anything;
 5. logs every decision with its evidence, and prints one line whether or not it acts.
 
@@ -85,9 +86,9 @@ Validate the published corpus (no network, no model calls):
 deno run --allow-read jev/dataset/validate.ts
 ```
 
-The decision policy (`probe_plus_receipts`) is measured on the same reviewed 100: 90/100
-(dev 40/50, heldout 50/50) against the legacy work baseline 85/100 and probe-only 88/100.
-Recompute it fresh (`--fresh`) or by composition over saved verdict files; see
+The decision policy (`probe_plus_receipts`, revision 2026-10-07) is measured on the same
+reviewed 100: 97/100 (dev 47/50, heldout 50/50) against the legacy work baseline 85/100 and
+probe-only 88/100. Recompute it fresh (`--fresh`) or by composition over saved verdict files; see
 `docs/PUBLIC_POLICY.md` for the method, tables, and limits.
 
 ## Private backtesting sandbox

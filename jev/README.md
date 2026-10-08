@@ -31,9 +31,12 @@ is unspent, and any of these holds:
 
 - the probe clears its floor;
 - any mechanical text receipt fires (`gate_unperformed_action`, `gate_explicit_missing`,
-  `gate_in_progress_action`, `gate_decision_locked`, `gate_questions_without_attempt`);
+  `gate_in_progress_action`, `gate_decision_locked`, `gate_questions_without_attempt`,
+  `gate_promised_action`, `gate_continuous_action`);
 - a completion claim in the final text is contradicted by the turn's own receipts
-  (`claim_contradicted`; supported/unobserved stay diagnostic in the log).
+  (`claim_contradicted`; supported/unobserved stay diagnostic in the log);
+- or the probe clears its floor with no waiting-state marker in the final (the probe-arm waiting
+  suppressor; receipts and contradictions pick up `waiting_suppressed` in the log but never lose).
 
 `waiting` and `unclear` verdicts still allow the turn. Latency ~200ms per call.
 Configuration: `detector-v2.json`; policy detail and measured results: `../docs/PUBLIC_POLICY.md`.
@@ -73,9 +76,10 @@ four-way Choice, and the `waiting` class became expressible.
 ## Status
 
 Working on real data; **not calibrated against human labels.** The labels are independent blind
-agent review, not human ground truth. On the public reviewed 100 the shipped policy scores 90
-(dev 40/50, heldout 50/50) against probe-only 88 and the legacy work baseline 85; details and
-limits are in `../docs/PUBLIC_POLICY.md`. Heldout was consulted across earlier iterations, so it
-is a regression set, not a blind prospective claim.
+agent review, not human ground truth. On the public reviewed 100 the shipped policy
+(revision 2026-10-07) scores 97 (dev 47/50, heldout 50/50) against the frozen 2026-10-06
+composition 90, probe-only 88, and the legacy work baseline 85; details and limits are in
+`../docs/PUBLIC_POLICY.md`. Heldout was consulted across earlier iterations, so it is a
+regression set, not a blind prospective claim.
 
 The public `dataset/` slice is separate and published-ready: 100 reviewed records with independent blind agent-review labels (`finished` 57, `authorized_unfinished` 26, `waiting` 16, `unclear` 1) and a frozen `dev` 50 / `heldout` 50 split. `dev` may support prompt/rubric refinement and teaching; `heldout` is evaluation-only. See `dataset/DATASET.md`.

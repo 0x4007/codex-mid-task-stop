@@ -5,7 +5,7 @@
 // gates pass, and the durable allowance is consumed before any continuation is emitted, so a turn can
 // never be continued twice.
 
-import { factsFor, textReceipts, textsFor } from "../jev/gates.ts";
+import { factsFor, textReceipts, textsFor, waitingSuppressor } from "../jev/gates.ts";
 
 const STATE_DIR = Deno.env.get("CODEX_STOP_GUARD_DIR") ??
   `${Deno.env.get("HOME")}/.local/state/codex-stop-guard`;
@@ -390,10 +390,25 @@ async function decide(event: Event): Promise<Decision> {
   const unfinished = typeof verdict.probabilities?.authorized_unfinished === "number"
     ? verdict.probabilities.authorized_unfinished
     : 0;
+  // The probe gate reads the probability jev assigns to authorized_unfinished, not `confidence`:
+  // `confidence` is jev's certainty about its own pick and overlaps badly between real stops
+  // (0.36-0.94) and false ones, while the option probability separates far better
+  // (stopped ~0.59-0.96 against ~0.48-0.55 for the false ones).
+  const probeContinue = choice === "authorized_unfinished" &&
+    unfinished >= CONTINUE_MIN_PROBABILITY;
+  // Waiting suppressor: applied to the probe arm only. A waiting-state marker ("waiting for",
+  // "monitoring", "still running", ...) in the final suppresses a probe-driven continue when no
+  // text receipt fires and no claim is contradicted: the work is in flight or held, so a
+  // continuation would duplicate it. Receipts and contradictions always win over the marker.
+  // The flag reports an effective suppression: a probe continue that the marker stopped.
+  const waitingMarker = waitingSuppressor(final);
+  const waitingSuppressed = waitingMarker && probeContinue && !receiptContinue &&
+    !claimContradicted;
   const evidence = {
     ...facts,
     text_receipts: textFacts,
     claim_contradicted: claimContradicted,
+    waiting_suppressed: waitingSuppressed,
     jev: verdict,
     floor: CONTINUE_MIN_PROBABILITY,
     unfinished,
@@ -403,13 +418,7 @@ async function decide(event: Event): Promise<Decision> {
   // Policy: continue when the probe clears its floor, when any mechanical receipt fires,
   // or when a completion claim is contradicted by the turn's own receipts. Supported and
   // unobserved claim states stay diagnostic in the log; only contradiction authorizes action.
-  // The probe gate reads the probability jev assigns to authorized_unfinished, not `confidence`:
-  // `confidence` is jev's certainty about its own pick and overlaps badly between real stops
-  // (0.36-0.94) and false ones, while the option probability separates far better
-  // (stopped ~0.59-0.96 against ~0.48-0.55 for the false ones).
-  const probeContinue = choice === "authorized_unfinished" &&
-    unfinished >= CONTINUE_MIN_PROBABILITY;
-  if (probeContinue || receiptContinue || claimContradicted) {
+  if (receiptContinue || claimContradicted || (probeContinue && !waitingSuppressed)) {
     return { allow: false, reason: "continue", evidence };
   }
   if (choice === "finished") return { allow: true, reason: "decided-finished", evidence };

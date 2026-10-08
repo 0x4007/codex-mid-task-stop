@@ -525,14 +525,36 @@ export interface TextReceipts {
   gate_in_progress_action: boolean;
   gate_decision_locked: boolean;
   gate_questions_without_attempt: boolean;
+  /** First-person intent/promise to act now: "Let me use|give…", "I'll/will/going to switch…". */
+  gate_promised_action: boolean;
+  /** First-person continuous action from the gerund vocabulary: "I'm applying…". */
+  gate_continuous_action: boolean;
 }
 
 const APOS = "[\u2019']";
 const GERUND =
   "(?:Verifying|Checking|Investigating|Implementing|Doing|Running|Testing|Building|Adding|Wiring|Recording|Preparing|Extending|Updating|Fixing|Patching|Writing|Working on|Reviewing|Auditing|Probing|Measuring|Comparing|Gathering|Collecting|Refactoring|Reworking|Tuning|Deploying|Pushing|Committing|Merging|Restarting|Rerunning|Re-running|Inspecting|Scanning|Contracting|Aligning|Correcting|Repairing|Drafting|Assembling|Finalizing|Scheduling|Rendering|Migrating|Installing|Configuring|Debugging|Tracing|Analyzing|Evaluating|Recovering|Reproducing)";
+const PROMISED_ACTION_RE = new RegExp(
+  `\\b(?:Let me\\s+(?:use|give)\\b|I(?:${APOS}ll|\\s+will|\\s+am going to|${APOS}m going to)\\s+switch\\b)`,
+  "i",
+);
+const CONTINUOUS_ACTION_RE = new RegExp(
+  `\\bI(?:${APOS}m|\\s+am)\\s+(?:still\\s+|now\\s+|currently\\s+)?(?!not\\b)(?:Applying|${GERUND})\\b`,
+  "i",
+);
+/** Objects that make an unperformed-action sentence an explanatory aside ("changed it/the code yet"). */
+const UNPERFORMED_ASIDE_RE = /^\s*(?:it\b|the\s+code\b)/i;
+/** Waiting-state markers for the probe-arm suppressor; receipt and claim arms always win.
+ *  `monitoring` requires first-person context so a noun usage ("Monitoring found and fixed…")
+ *  is not read as a waiting state. */
+const WAITING_STATE_RE = new RegExp(
+  `\\b(?:waiting for|waiting on|still running|still in flight|holding for|while it finishes|when it completes)\\b` +
+    `|(?:\\bI(?:${APOS}m|\\s+am))\\s+monitoring\\b`,
+  "i",
+);
 const UNPERFORMED_RE = new RegExp(
   `\\bI (?:haven${APOS}?t|have not|didn${APOS}?t|did not|wasn${APOS}?t|was not)(?:\\s+yet)?(?:\\s+\\w+)?\\s+(?:restored|changed|restarted|updated|implemented|fixed|tested|verified|checked|ran|run|completed|finished|started|deployed|committed|pushed|established|created|written|built|produced|confirmed|recovered|saved|migrated|installed|configured)\\b`,
-  "i",
+  "gi",
 );
 const EXPLICIT_MISSING_RE = new RegExp(
   "(?:\\bwhat(?:[\u2019']s| is) missing (?:is|are)\\b|\\bdoes not (?:yet )?reproduce\\b|\\bnot (?:yet )?(?:implemented|done|finished|ready|reproduced)\\b(?!,? by design))",
@@ -566,10 +588,34 @@ function unquotedMatch(re: RegExp, text: string): boolean {
   return re.test(stripQuoted(text));
 }
 
+/** gate_unperformed_action with the explanatory aside excluded: "I have not changed it/the code
+ *  yet" reports an untouched artifact inside an explanation, while named pending work
+ *  ("I haven't restored opening it in your app yet") keeps firing. */
+function unperformedActionReceipt(final: string): boolean {
+  const text = stripQuoted(final);
+  for (const match of text.matchAll(UNPERFORMED_RE)) {
+    const after = text.slice(
+      (match.index ?? 0) + match[0].length,
+      (match.index ?? 0) + match[0].length + 16,
+    );
+    if (UNPERFORMED_ASIDE_RE.test(after)) continue;
+    return true;
+  }
+  return false;
+}
+
+/** Waiting-state marker helper. The hook and the offline scorer apply it to the probe arm only:
+ *  a marker suppresses a probe continue when no text receipt fires and no claim is contradicted. */
+export function waitingSuppressor(final: string): boolean {
+  return WAITING_STATE_RE.test(stripQuoted(final));
+}
+
 /** Read the mechanical unfinished-shape receipts from the decision-time texts. */
 export function textReceipts(request: string, final: string): TextReceipts {
   return {
-    gate_unperformed_action: unquotedMatch(UNPERFORMED_RE, final),
+    gate_unperformed_action: unperformedActionReceipt(final),
+    gate_promised_action: unquotedMatch(PROMISED_ACTION_RE, final),
+    gate_continuous_action: unquotedMatch(CONTINUOUS_ACTION_RE, final),
     gate_explicit_missing: unquotedMatch(EXPLICIT_MISSING_RE, final),
     gate_in_progress_action: unquotedMatch(IN_PROGRESS_OPEN_RE, final) ||
       unquotedMatch(IN_PROGRESS_START_RE, final) ||

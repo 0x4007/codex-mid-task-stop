@@ -16,7 +16,7 @@
 // Outputs: .publication-audit/stopguard-public100/results.json (ignored) and the published
 // copy jev/public-policy-results.json. Public-safe: public ids only, no session text.
 // Run: deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts --help
-import { textReceipts } from "./gates.ts";
+import { textReceipts, waitingSuppressor } from "./gates.ts";
 
 const REPO = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
 const AUDIT = `${REPO}/.publication-audit/stopguard-public100`;
@@ -378,6 +378,8 @@ function compose(input: ComposeInput): Record<string, unknown> {
     gate_in_progress_action: { fired: 0, on_authorized_unfinished: 0, on_other: 0 },
     gate_decision_locked: { fired: 0, on_authorized_unfinished: 0, on_other: 0 },
     gate_questions_without_attempt: { fired: 0, on_authorized_unfinished: 0, on_other: 0 },
+    gate_promised_action: { fired: 0, on_authorized_unfinished: 0, on_other: 0 },
+    gate_continuous_action: { fired: 0, on_authorized_unfinished: 0, on_other: 0 },
   };
   for (const row of rows) {
     const request = row.user_request.slice(0, WINDOWS.request);
@@ -399,17 +401,24 @@ function compose(input: ComposeInput): Record<string, unknown> {
       ? null
       : work.choice === "authorized_unfinished" &&
         (work.probabilities?.authorized_unfinished ?? 0) >= FLOOR_WORK_BINARY;
-    const policy = probe == null ? null : probe || firedClasses.length > 0;
+    const policy = probe == null
+      ? null
+      : firedClasses.length > 0 ||
+        (probe && !waitingSuppressor(final));
     probeDecisions.set(row.id, probe);
     workDecisions.set(row.id, workDecision);
     policyDecisions.set(row.id, policy);
-    if (probe === false && policy === true) {
+    // Flips where the policy differs from the bare probe, in either direction: receipts widen
+    // the arm and the waiting suppressor narrows it.
+    if (probe !== policy) {
       receiptFlips.push({
         id: row.id,
         split: row.split,
         label: row.label,
         classes: firedClasses,
         correct: truth,
+        direction: policy === true ? "receipt-widens" : "waiting-suppresses",
+        fixed: policy === truth,
       });
     }
     cases.push({
@@ -437,6 +446,8 @@ function compose(input: ComposeInput): Record<string, unknown> {
     gate_in_progress_action: 0,
     gate_decision_locked: 0,
     gate_questions_without_attempt: 0,
+    gate_promised_action: 0,
+    gate_continuous_action: 0,
   };
   const trainLabels = { authorized_unfinished: 0, finished: 0 };
   let trainFired = 0;
@@ -457,7 +468,12 @@ function compose(input: ComposeInput): Record<string, unknown> {
     heldout: rows.filter((r) => r.split === "heldout").length,
     total: rows.length,
   };
-  const flipsCorrect = receiptFlips.filter((f) => f.correct === true).length;
+  const widens = receiptFlips.filter((f) => f.direction === "receipt-widens");
+  const suppresses = receiptFlips.filter((f) => f.direction === "waiting-suppresses");
+  const flipsCorrect = widens.filter((f) => f.correct === true).length;
+  const flipsIncorrect = widens.filter((f) => f.correct !== true).length;
+  const suppressedFixed = suppresses.filter((f) => f.fixed === true).length;
+  const suppressedBroken = suppresses.filter((f) => f.fixed !== true).length;
   return {
     schema: "public-policy-results/v1",
     generated_utc: new Date().toISOString(),
@@ -479,7 +495,8 @@ function compose(input: ComposeInput): Record<string, unknown> {
         summary: armSummary(probeDecisions, rows),
       },
       probe_plus_receipts: {
-        rule: "probe_only OR any text receipt (claim contradiction is live-only; see notes)",
+        rule: "any text receipt OR (probe_only AND NOT waiting-suppressed); the waiting suppressor "
+          + "applies to the probe arm only (claim contradiction is live-only; see notes)",
         floor: FLOOR_PROBE,
         summary: armSummary(policyDecisions, rows),
       },
@@ -488,7 +505,9 @@ function compose(input: ComposeInput): Record<string, unknown> {
       by_class: byClass,
       flips: receiptFlips,
       flips_added_correct: flipsCorrect,
-      flips_added_incorrect: receiptFlips.length - flipsCorrect,
+      flips_added_incorrect: flipsIncorrect,
+      waiting_suppressed_fixed: suppressedFixed,
+      waiting_suppressed_broken: suppressedBroken,
     },
     train678_receipts: {
       rows: trainRows.length,
@@ -616,8 +635,9 @@ if (import.meta.main) {
 
   const workSha = await sha256File(WORK_PATH);
   const notes = [
-    "claim_contradicted cannot be recomputed offline on dataset rows: they carry no transcripts; the live hook evaluates it from turn receipts",
-    "four of five receipt classes are fitted to single residual cases from frozen sets; a prospective blind set is the remaining evidence step",
+    "policy revision 2026-10-07 (offline pass): added gate_promised_action and gate_continuous_action receipts, tightened gate_unperformed_action to keep named pending work while dropping the explanatory 'changed it/the code yet' aside, and added the probe-arm waiting suppressor (waiting_suppressed); v3 verdict probabilities are the frozen 2026-10-06 fresh files, so this composition adds no provider calls",
+    "claim_contradicted cannot be recomputed offline on dataset rows: they carry no transcripts; the live hook evaluates it from turn receipts, and is treated as false here (the widest suppressor scope)",
+    "the two new receipt classes and the D tightening are fitted on dev residuals; heldout stays 50/50 and train678 is the false-fire control (<= 40 cap)",
     "heldout was consulted across earlier iterations: this is a regression set, not a blind prospective claim",
     "labels are independent agent review, not human ground truth",
     "fresh mode uses an isolated cache under .publication-audit/stopguard-public100; replays are reported per case",

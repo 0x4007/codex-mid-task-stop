@@ -1,7 +1,7 @@
 {
   "schema": "public-policy-results/v1",
-  "generated_utc": "2026-10-06T21:02:29.765Z",
-  "repo_head": "7b146cf66fdd0099233621c55ef3474e4d0d7322",
+  "generated_utc": "2026-10-07T02:45:32.720Z",
+  "repo_head": "4e4c2d1def2b84c4f4e6a0301a2751297c2f7a45",
   "working_tree": "dirty",
   "question_v3_sha256": "7c63f7932901782f75223d677189e806a915dd2096b05667cf23f2d112f77beb",
   "floors": {
@@ -150,28 +150,20 @@
       }
     },
     "probe_plus_receipts": {
-      "rule": "probe_only OR any text receipt (claim contradiction is live-only; see notes)",
+      "rule": "any text receipt OR (probe_only AND NOT waiting-suppressed); the waiting suppressor applies to the probe arm only (claim contradiction is live-only; see notes)",
       "floor": 0.6,
       "summary": {
         "dev": {
           "rows": 50,
           "answered": 50,
-          "correct": 40,
+          "correct": 47,
           "errors": {
             "fn": [
               "public-0007",
               "public-0013",
-              "public-0016",
-              "public-0031",
-              "public-0034",
-              "public-0059",
-              "public-0086"
+              "public-0016"
             ],
-            "fp": [
-              "public-0012",
-              "public-0047",
-              "public-0058"
-            ]
+            "fp": []
           }
         },
         "heldout": {
@@ -186,22 +178,14 @@
         "total": {
           "rows": 100,
           "answered": 100,
-          "correct": 90,
+          "correct": 97,
           "errors": {
             "fn": [
               "public-0007",
               "public-0013",
-              "public-0016",
-              "public-0031",
-              "public-0034",
-              "public-0059",
-              "public-0086"
+              "public-0016"
             ],
-            "fp": [
-              "public-0012",
-              "public-0047",
-              "public-0058"
-            ]
+            "fp": []
           }
         }
       }
@@ -210,9 +194,9 @@
   "receipt_slices": {
     "by_class": {
       "gate_unperformed_action": {
-        "fired": 2,
+        "fired": 1,
         "on_authorized_unfinished": 1,
-        "on_other": 1
+        "on_other": 0
       },
       "gate_explicit_missing": {
         "fired": 0,
@@ -233,9 +217,39 @@
         "fired": 0,
         "on_authorized_unfinished": 0,
         "on_other": 0
+      },
+      "gate_promised_action": {
+        "fired": 3,
+        "on_authorized_unfinished": 3,
+        "on_other": 0
+      },
+      "gate_continuous_action": {
+        "fired": 3,
+        "on_authorized_unfinished": 3,
+        "on_other": 0
       }
     },
     "flips": [
+      {
+        "id": "public-0012",
+        "split": "dev",
+        "label": "waiting",
+        "classes": [],
+        "correct": false,
+        "direction": "waiting-suppresses",
+        "fixed": true
+      },
+      {
+        "id": "public-0031",
+        "split": "dev",
+        "label": "authorized_unfinished",
+        "classes": [
+          "gate_continuous_action"
+        ],
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
+      },
       {
         "id": "public-0033",
         "split": "heldout",
@@ -243,7 +257,20 @@
         "classes": [
           "gate_in_progress_action"
         ],
-        "correct": true
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
+      },
+      {
+        "id": "public-0034",
+        "split": "dev",
+        "label": "authorized_unfinished",
+        "classes": [
+          "gate_promised_action"
+        ],
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
       },
       {
         "id": "public-0037",
@@ -252,7 +279,9 @@
         "classes": [
           "gate_unperformed_action"
         ],
-        "correct": true
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
       },
       {
         "id": "public-0044",
@@ -261,30 +290,58 @@
         "classes": [
           "gate_decision_locked"
         ],
-        "correct": true
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
       },
       {
-        "id": "public-0058",
+        "id": "public-0047",
         "split": "dev",
-        "label": "finished",
+        "label": "waiting",
+        "classes": [],
+        "correct": false,
+        "direction": "waiting-suppresses",
+        "fixed": true
+      },
+      {
+        "id": "public-0059",
+        "split": "dev",
+        "label": "authorized_unfinished",
         "classes": [
-          "gate_unperformed_action"
+          "gate_promised_action"
         ],
-        "correct": false
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
+      },
+      {
+        "id": "public-0086",
+        "split": "dev",
+        "label": "authorized_unfinished",
+        "classes": [
+          "gate_promised_action"
+        ],
+        "correct": true,
+        "direction": "receipt-widens",
+        "fixed": true
       }
     ],
-    "flips_added_correct": 3,
-    "flips_added_incorrect": 1
+    "flips_added_correct": 7,
+    "flips_added_incorrect": 0,
+    "waiting_suppressed_fixed": 2,
+    "waiting_suppressed_broken": 0
   },
   "train678_receipts": {
     "rows": 678,
-    "fired": 29,
+    "fired": 30,
     "by_class": {
-      "gate_unperformed_action": 13,
+      "gate_unperformed_action": 10,
       "gate_explicit_missing": 5,
       "gate_in_progress_action": 11,
       "gate_decision_locked": 1,
-      "gate_questions_without_attempt": 0
+      "gate_questions_without_attempt": 0,
+      "gate_promised_action": 0,
+      "gate_continuous_action": 4
     },
     "labels": {
       "authorized_unfinished": 5,
@@ -302,6 +359,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -328,6 +387,8 @@
       "work_p_authorized_unfinished": 0.02,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -354,6 +415,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -380,6 +443,8 @@
       "work_p_authorized_unfinished": 0.52,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -406,6 +471,8 @@
       "work_p_authorized_unfinished": 0.43,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -432,6 +499,8 @@
       "work_p_authorized_unfinished": 0.9,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -458,6 +527,8 @@
       "work_p_authorized_unfinished": 0.9,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -484,6 +555,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -510,6 +583,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -536,6 +611,8 @@
       "work_p_authorized_unfinished": 0.9,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": true,
         "gate_decision_locked": false,
@@ -564,6 +641,8 @@
       "work_p_authorized_unfinished": 0.92,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -590,6 +669,8 @@
       "work_p_authorized_unfinished": 0.24,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -599,12 +680,12 @@
       "decide": {
         "work_baseline": false,
         "probe_only": true,
-        "probe_plus_receipts": true
+        "probe_plus_receipts": false
       },
       "correct": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       }
     },
     {
@@ -616,6 +697,8 @@
       "work_p_authorized_unfinished": 0.98,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -642,6 +725,8 @@
       "work_p_authorized_unfinished": 0.72,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -668,6 +753,8 @@
       "work_p_authorized_unfinished": 0.76,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -694,6 +781,8 @@
       "work_p_authorized_unfinished": 0.96,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -720,6 +809,8 @@
       "work_p_authorized_unfinished": 0.41,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -746,6 +837,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -772,6 +865,8 @@
       "work_p_authorized_unfinished": 0.36,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -798,6 +893,8 @@
       "work_p_authorized_unfinished": 0.11,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -824,6 +921,8 @@
       "work_p_authorized_unfinished": 0.96,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -850,6 +949,8 @@
       "work_p_authorized_unfinished": 0.89,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -876,6 +977,8 @@
       "work_p_authorized_unfinished": 0.95,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -902,6 +1005,8 @@
       "work_p_authorized_unfinished": 0.9400000000000001,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": true,
         "gate_decision_locked": false,
@@ -930,6 +1035,8 @@
       "work_p_authorized_unfinished": 1,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -956,6 +1063,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -982,6 +1091,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1008,6 +1119,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1034,6 +1147,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1060,6 +1175,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1086,21 +1203,25 @@
       "work_p_authorized_unfinished": 0.88,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": true,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
         "gate_questions_without_attempt": false
       },
-      "receipts_fired": [],
+      "receipts_fired": [
+        "gate_continuous_action"
+      ],
       "decide": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       },
       "correct": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       }
     },
     {
@@ -1112,6 +1233,8 @@
       "work_p_authorized_unfinished": 0.52,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1138,6 +1261,8 @@
       "work_p_authorized_unfinished": 0.64,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": true,
         "gate_decision_locked": false,
@@ -1166,21 +1291,25 @@
       "work_p_authorized_unfinished": 0.96,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": true,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
         "gate_questions_without_attempt": false
       },
-      "receipts_fired": [],
+      "receipts_fired": [
+        "gate_promised_action"
+      ],
       "decide": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       },
       "correct": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       }
     },
     {
@@ -1192,12 +1321,15 @@
       "work_p_authorized_unfinished": 0.99,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": true,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": true,
         "gate_questions_without_attempt": false
       },
       "receipts_fired": [
+        "gate_continuous_action",
         "gate_decision_locked"
       ],
       "decide": {
@@ -1220,6 +1352,8 @@
       "work_p_authorized_unfinished": 0.13,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1246,6 +1380,8 @@
       "work_p_authorized_unfinished": 0.92,
       "receipts": {
         "gate_unperformed_action": true,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1274,6 +1410,8 @@
       "work_p_authorized_unfinished": 0.21,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1300,6 +1438,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1326,6 +1466,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1352,6 +1494,8 @@
       "work_p_authorized_unfinished": 0.09,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1378,6 +1522,8 @@
       "work_p_authorized_unfinished": 0.69,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": true,
@@ -1406,6 +1552,8 @@
       "work_p_authorized_unfinished": 0.55,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1432,6 +1580,8 @@
       "work_p_authorized_unfinished": 0.38,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1458,6 +1608,8 @@
       "work_p_authorized_unfinished": 0.08,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1467,12 +1619,12 @@
       "decide": {
         "work_baseline": false,
         "probe_only": true,
-        "probe_plus_receipts": true
+        "probe_plus_receipts": false
       },
       "correct": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       }
     },
     {
@@ -1484,6 +1636,8 @@
       "work_p_authorized_unfinished": 0.92,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1510,6 +1664,8 @@
       "work_p_authorized_unfinished": 0.08,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1536,6 +1692,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1562,6 +1720,8 @@
       "work_p_authorized_unfinished": 0.95,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1588,6 +1748,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1614,6 +1776,8 @@
       "work_p_authorized_unfinished": 1,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1640,6 +1804,8 @@
       "work_p_authorized_unfinished": 0.03,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1666,6 +1832,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1692,6 +1860,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1717,35 +1887,9 @@
       "work_choice": "authorized_unfinished",
       "work_p_authorized_unfinished": 0.58,
       "receipts": {
-        "gate_unperformed_action": true,
-        "gate_explicit_missing": false,
-        "gate_in_progress_action": false,
-        "gate_decision_locked": false,
-        "gate_questions_without_attempt": false
-      },
-      "receipts_fired": [
-        "gate_unperformed_action"
-      ],
-      "decide": {
-        "work_baseline": true,
-        "probe_only": false,
-        "probe_plus_receipts": true
-      },
-      "correct": {
-        "work_baseline": false,
-        "probe_only": true,
-        "probe_plus_receipts": false
-      }
-    },
-    {
-      "id": "public-0059",
-      "split": "dev",
-      "label": "authorized_unfinished",
-      "v3_p": 0.18,
-      "work_choice": "authorized_unfinished",
-      "work_p_authorized_unfinished": 0.93,
-      "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1758,9 +1902,39 @@
         "probe_plus_receipts": false
       },
       "correct": {
+        "work_baseline": false,
+        "probe_only": true,
+        "probe_plus_receipts": true
+      }
+    },
+    {
+      "id": "public-0059",
+      "split": "dev",
+      "label": "authorized_unfinished",
+      "v3_p": 0.18,
+      "work_choice": "authorized_unfinished",
+      "work_p_authorized_unfinished": 0.93,
+      "receipts": {
+        "gate_unperformed_action": false,
+        "gate_promised_action": true,
+        "gate_continuous_action": false,
+        "gate_explicit_missing": false,
+        "gate_in_progress_action": false,
+        "gate_decision_locked": false,
+        "gate_questions_without_attempt": false
+      },
+      "receipts_fired": [
+        "gate_promised_action"
+      ],
+      "decide": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
+      },
+      "correct": {
+        "work_baseline": true,
+        "probe_only": false,
+        "probe_plus_receipts": true
       }
     },
     {
@@ -1772,6 +1946,8 @@
       "work_p_authorized_unfinished": 0.06,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1798,6 +1974,8 @@
       "work_p_authorized_unfinished": 0.17,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1824,6 +2002,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1850,6 +2030,8 @@
       "work_p_authorized_unfinished": 1,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1876,6 +2058,8 @@
       "work_p_authorized_unfinished": 0.12,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1902,6 +2086,8 @@
       "work_p_authorized_unfinished": 0.86,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1928,6 +2114,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -1954,12 +2142,16 @@
       "work_p_authorized_unfinished": 0.95,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": true,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
         "gate_questions_without_attempt": false
       },
-      "receipts_fired": [],
+      "receipts_fired": [
+        "gate_continuous_action"
+      ],
       "decide": {
         "work_baseline": true,
         "probe_only": true,
@@ -1980,6 +2172,8 @@
       "work_p_authorized_unfinished": 0.98,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": true,
         "gate_decision_locked": false,
@@ -2008,6 +2202,8 @@
       "work_p_authorized_unfinished": 0.04,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2034,6 +2230,8 @@
       "work_p_authorized_unfinished": 0.05,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2060,6 +2258,8 @@
       "work_p_authorized_unfinished": 1,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2086,6 +2286,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2112,6 +2314,8 @@
       "work_p_authorized_unfinished": 0.76,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2138,6 +2342,8 @@
       "work_p_authorized_unfinished": 0.18,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2164,6 +2370,8 @@
       "work_p_authorized_unfinished": 0.13,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2190,6 +2398,8 @@
       "work_p_authorized_unfinished": 0.25,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2216,6 +2426,8 @@
       "work_p_authorized_unfinished": 0.18,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2242,6 +2454,8 @@
       "work_p_authorized_unfinished": 0.05,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2268,6 +2482,8 @@
       "work_p_authorized_unfinished": 1,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2294,6 +2510,8 @@
       "work_p_authorized_unfinished": 0.98,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2320,6 +2538,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2346,6 +2566,8 @@
       "work_p_authorized_unfinished": 0.1,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2372,6 +2594,8 @@
       "work_p_authorized_unfinished": 0.07,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2398,6 +2622,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2424,21 +2650,25 @@
       "work_p_authorized_unfinished": 0.79,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": true,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
         "gate_questions_without_attempt": false
       },
-      "receipts_fired": [],
+      "receipts_fired": [
+        "gate_promised_action"
+      ],
       "decide": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       },
       "correct": {
         "work_baseline": true,
         "probe_only": false,
-        "probe_plus_receipts": false
+        "probe_plus_receipts": true
       }
     },
     {
@@ -2450,6 +2680,8 @@
       "work_p_authorized_unfinished": 0.99,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2476,6 +2708,8 @@
       "work_p_authorized_unfinished": 0.46,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2502,6 +2736,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2528,6 +2764,8 @@
       "work_p_authorized_unfinished": 0,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2554,6 +2792,8 @@
       "work_p_authorized_unfinished": 0.05,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2580,6 +2820,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2606,6 +2848,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2632,6 +2876,8 @@
       "work_p_authorized_unfinished": 0.03,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2658,6 +2904,8 @@
       "work_p_authorized_unfinished": 0.42,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2684,6 +2932,8 @@
       "work_p_authorized_unfinished": 0.99,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2710,6 +2960,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2736,6 +2988,8 @@
       "work_p_authorized_unfinished": 0.81,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2762,6 +3016,8 @@
       "work_p_authorized_unfinished": 0.24,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2788,6 +3044,8 @@
       "work_p_authorized_unfinished": 0.98,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2814,6 +3072,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2840,6 +3100,8 @@
       "work_p_authorized_unfinished": 0.09,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2866,6 +3128,8 @@
       "work_p_authorized_unfinished": 0.01,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2892,6 +3156,8 @@
       "work_p_authorized_unfinished": 0.13,
       "receipts": {
         "gate_unperformed_action": false,
+        "gate_promised_action": false,
+        "gate_continuous_action": false,
         "gate_explicit_missing": false,
         "gate_in_progress_action": false,
         "gate_decision_locked": false,
@@ -2913,13 +3179,13 @@
   "provenance": {
     "fresh": true,
     "commands": [
-      "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts",
+      "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts --from-verdicts .publication-audit/stopguard-public100/verdicts-v3-fresh.json --from-verdicts .publication-audit/stopguard-public100/verdicts-work-fresh.json",
       "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts --fresh --question v3",
       "deno run --allow-read --allow-write --allow-run --allow-env jev/score-public-policy.ts --fresh --question work"
     ],
     "verdicts_files": [
       {
-        "file": "verdicts-v3-fresh.json",
+        "file": ".publication-audit/stopguard-public100/verdicts-v3-fresh.json",
         "sha256": "984457c9ec7b461548d3dff4e7f82f8351bc2ced1bd6a396c129997c4c03c4f2",
         "kind": "scorer-verdicts",
         "questions": [
@@ -2927,7 +3193,7 @@
         ]
       },
       {
-        "file": "verdicts-work-fresh.json",
+        "file": ".publication-audit/stopguard-public100/verdicts-work-fresh.json",
         "sha256": "0306432946932dc6fe226d6079873a12b415ecd2331a5bde9f3a88bca0bdfffc",
         "kind": "scorer-verdicts",
         "questions": [
@@ -2941,8 +3207,9 @@
     }
   },
   "notes": [
-    "claim_contradicted cannot be recomputed offline on dataset rows: they carry no transcripts; the live hook evaluates it from turn receipts",
-    "four of five receipt classes are fitted to single residual cases from frozen sets; a prospective blind set is the remaining evidence step",
+    "policy revision 2026-10-07 (offline pass): added gate_promised_action and gate_continuous_action receipts, tightened gate_unperformed_action to keep named pending work while dropping the explanatory 'changed it/the code yet' aside, and added the probe-arm waiting suppressor (waiting_suppressed); v3 verdict probabilities are the frozen 2026-10-06 fresh files, so this composition adds no provider calls",
+    "claim_contradicted cannot be recomputed offline on dataset rows: they carry no transcripts; the live hook evaluates it from turn receipts, and is treated as false here (the widest suppressor scope)",
+    "the two new receipt classes and the D tightening are fitted on dev residuals; heldout stays 50/50 and train678 is the false-fire control (<= 40 cap)",
     "heldout was consulted across earlier iterations: this is a regression set, not a blind prospective claim",
     "labels are independent agent review, not human ground truth",
     "fresh mode uses an isolated cache under .publication-audit/stopguard-public100; replays are reported per case"
